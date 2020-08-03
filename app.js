@@ -36,9 +36,7 @@ app.post('/api/v1/tours', (req, res) => {
   //Create id for last item
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
-
   tours.push(newTour);
-
   //persist data in file
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
@@ -56,6 +54,7 @@ app.post('/api/v1/tours', (req, res) => {
     }
   );
 });
+//Update File Data
 
 const port = 3000;
 app.listen(3000, () => {
