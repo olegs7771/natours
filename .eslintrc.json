@@ -11,7 +11,7 @@
     "no-process-exit": "off",
     "no-return-await": "off",
     "no-underscore-dangle": "off",
-    "nclass-method-use-this": "off",
-    "preffer-destructuring": ["error"]
+    "nclass-method-use-this": "off"
+    // "preffer-destructuring": ["error"]
   }
 }
