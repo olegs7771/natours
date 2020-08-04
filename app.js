@@ -6,6 +6,7 @@ const app = express();
 app.use(express.json());
 
 //WRITE OUR OWN MIDDLEWARE
+
 app.use(morgan('dev'));
 
 app.use((req, res, next) => {
@@ -16,7 +17,7 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-
+//Get Tours Sync
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
@@ -84,6 +85,9 @@ const deleteTour = (req, res) => {
     tour: null,
   });
 };
+//Users
+//Get All Users
+const getAllUsers = (req, res) => {};
 
 // app.delete('/api/v1/tours/:id', deleteTour);
 // app.get('/api/v1/tours/:id', getTourById);
@@ -96,6 +100,8 @@ app
   .delete(deleteTour)
   .get(getTourById)
   .patch(updateTour);
+
+app.route('/api/v1/users').get(getAllUsers);
 
 const port = 3000;
 app.listen(3000, () => {
