@@ -1,8 +1,18 @@
 const fs = require('fs');
 const express = require('express');
-const { log } = require('console');
+
 const app = express();
 app.use(express.json());
+
+//WRITE OUR OWN MIDDLEWARE
+app.use((req, res, next) => {
+  console.log('First Middleware');
+  next();
+});
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
@@ -24,8 +34,10 @@ const getTourById = (req, res) => {
 };
 //Get All Tours
 const getAllTours = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
+    requestTime: req.requestTime,
     results: tours.length,
     data: {
       tours,
@@ -69,6 +81,7 @@ const deleteTour = (req, res) => {
     tour: null,
   });
 };
+
 // app.delete('/api/v1/tours/:id', deleteTour);
 // app.get('/api/v1/tours/:id', getTourById);
 // app.patch('/api/v1/tours/:id', updateTour);
