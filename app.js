@@ -5,10 +5,10 @@ const tours = require('./routes/tours');
 const users = require('./routes/users');
 
 const app = express();
+app.use(morgan('dev'));
 app.use(express.json());
 
 //WRITE OUR OWN MIDDLEWARE
-app.use(morgan('dev'));
 app.use((req, res, next) => {
   console.log('First Middleware');
   next();
