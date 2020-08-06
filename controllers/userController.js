@@ -4,6 +4,17 @@ const users = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/users.json`)
 );
 
+//Create Check ID middleware
+const checkID = (req, res, next, val) => {
+  const user = users.find((user) => user._id === val);
+  if (!user)
+    return res
+      .status(400)
+      .json({ result: 'error', message: 'User not found in check middleware' });
+
+  next();
+};
+
 //Users
 //Get All Users
 
@@ -32,13 +43,20 @@ const deleteUser = (req, res) => {
   });
 };
 const getUser = (req, res) => {
+  console.log('getting user from handler');
   const user = users.find((user) => user._id === req.params.id);
-  if (!user)
-    return res.status(400).json({ result: 'error', message: 'User not found' });
+
   res.status(200).json({
     response: 'success',
     data: { user },
   });
 };
 
-module.exports = { getAllUsers, addUser, updateUser, deleteUser, getUser };
+module.exports = {
+  getAllUsers,
+  addUser,
+  updateUser,
+  deleteUser,
+  getUser,
+  checkID,
+};

@@ -4,6 +4,29 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+//Create check for id middleware
+const checkID = (req, res, next, val) => {
+  const tour = tours.find((elem) => elem.id === req.params.id * 1);
+  if (!tour)
+    return res.status(400).json({
+      result: 'Error',
+      message: 'Tour not found from middleware check',
+    });
+  next();
+};
+
+//Ceck for Post (AddTour)
+const checkNewTour = (req, res, next) => {
+  console.log('req.body middleware post', req.body);
+  if (!req.body.name) {
+    return res.status(400).json({
+      result: 'Error',
+      message: 'Name can not be empty',
+    });
+  }
+  next();
+};
+
 //Get All Tours
 const getAllTours = (req, res) => {
   console.log(req.requestTime);
@@ -20,8 +43,7 @@ const getAllTours = (req, res) => {
 const getTour = (req, res) => {
   console.log('req.params', req.params);
   const tour = tours.find((elem) => elem.id === req.params.id * 1);
-  if (!tour)
-    return res.status(400).json({ result: 'Error', message: 'Tour not found' });
+
   console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
@@ -33,17 +55,22 @@ const getTour = (req, res) => {
 };
 //Add New Tour
 const addNewTour = (req, res) => {
+  console.log('req.body', req.body);
   //Create id for last item
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
   //persist data in file
+
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       if (err) {
-        res.status(400).json(err);
+        return res.status(400).json({
+          response: 'Error',
+          error: err,
+        });
       }
       res.status(201).json({
         status: 'success',
@@ -56,6 +83,7 @@ const addNewTour = (req, res) => {
 };
 //Update File Data
 const updateTour = (req, res) => {
+  console.log('req', req);
   res.status(200).json({
     result: 'success',
     tour: 'Updated',
@@ -69,4 +97,12 @@ const deleteTour = (req, res) => {
   });
 };
 
-module.exports = { getAllTours, getTour, deleteTour, updateTour, addNewTour };
+module.exports = {
+  getAllTours,
+  getTour,
+  deleteTour,
+  updateTour,
+  addNewTour,
+  checkID,
+  checkNewTour,
+};
