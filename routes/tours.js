@@ -6,8 +6,6 @@ const {
   deleteTour,
   updateTour,
   addNewTour,
-  checkID,
-  checkNewTour,
 } = require('../controllers/tourController');
 
 //Create Param Middleware
@@ -17,12 +15,9 @@ router.param('id', (req, res, next, val) => {
   next();
 });
 
-//Testing Id middleware
-router.param('id', checkID);
-
 //Mounting Router on the route
 
-router.route('/').get(getAllTours).post(checkNewTour, addNewTour);
+router.route('/').get(getAllTours).post(addNewTour);
 router.route('/:id').delete(deleteTour).get(getTour).patch(updateTour);
 
 module.exports = router;
