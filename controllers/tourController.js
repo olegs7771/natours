@@ -1,11 +1,9 @@
 const fs = require('fs');
 const Tour = require('../models/Tour');
-//Get Tours Sync!
-// const tours = JSON.parse(
+// Get Tours Sync!
+// const toursJson = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
-
-//Create check for id middleware
 
 //Ceck for Post (AddTour)
 const checkNewTour = (req, res, next) => {
@@ -56,8 +54,10 @@ const getTour = async (req, res) => {
     });
   }
 };
+
 //Add New Tour
 const addNewTour = async (req, res) => {
+  console.log('toursJson', toursJson.length);
   try {
     console.log('req.body', req.body);
     const newTour = await Tour.create(req.body);
