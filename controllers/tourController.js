@@ -77,8 +77,9 @@ const addNewTour = async (req, res) => {
 //Update File Data
 const updateTour = async (req, res) => {
   try {
-    let tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      runValidators: true,
     });
 
     res.status(201).json({
@@ -95,11 +96,23 @@ const updateTour = async (req, res) => {
   }
 };
 //Delete File Data
-const deleteTour = (req, res) => {
-  res.status(200).json({
-    result: 'success',
-    tour: null,
-  });
+const deleteTour = async (req, res) => {
+  console.log('req.params', req.params);
+  try {
+    const tour = await Tour.findByIdAndDelete(req.params.id, {
+      select: 'name',
+    });
+    console.log('tour', tour);
+    res.status(200).json({
+      result: 'success',
+      message: `${tour.name} was successfully deleted`,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'Error',
+      message: 'Can not find the document',
+    });
+  }
 };
 
 module.exports = {
