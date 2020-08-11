@@ -19,12 +19,27 @@ const checkNewTour = (req, res, next) => {
 
 //Get All Tours
 const getAllTours = async (req, res) => {
-  console.log('req.query', req.query);
   try {
-    const tours = await Tour.find({
-      duration: req.query.duration,
-      difficulty: req.query.difficulty,
-    });
+    //Build Query
+    console.log('req.query', req.query);
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .lt(10)
+    //   .where('difficulty')
+    //   .equals('medium');
+    const queryObj = { ...req.query };
+    const exludeFields = ['page', 'sort', 'limit', 'fields'];
+    exludeFields.forEach((elem) => delete queryObj[elem]);
+
+    console.log('req.query', req.query);
+    console.log('queryObj', queryObj);
+    const query = Tour.find(queryObj);
+    //Impliment query sorting / filter
+
+    //Execute Query
+    const tours = await query;
+
+    //Send Response
     res.status(200).json({
       status: 'success',
 
