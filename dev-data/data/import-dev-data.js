@@ -24,28 +24,26 @@ const importData = async () => {
   try {
     await Tour.create(tours);
     console.log('data successfully loaded');
-    process.exit();
   } catch (err) {
     console.log('err :', err);
   }
+  process.exit();
 };
 
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
     console.log('all deleted');
-    process.exit();
   } catch (err) {
     console.log('err to delete ', err);
   }
+  process.exit();
 };
 
 if (process.argv[2] === '--import') {
   importData();
 } else if (process.argv[2] === '--delete') {
   deleteData();
-
-  // process.exit();
 }
 console.log(process.argv);
 //

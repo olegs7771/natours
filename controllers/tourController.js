@@ -19,8 +19,12 @@ const checkNewTour = (req, res, next) => {
 
 //Get All Tours
 const getAllTours = async (req, res) => {
+  console.log('req.query', req.query);
   try {
-    const tours = await Tour.find();
+    const tours = await Tour.find({
+      duration: req.query.duration,
+      difficulty: req.query.difficulty,
+    });
     res.status(200).json({
       status: 'success',
 
