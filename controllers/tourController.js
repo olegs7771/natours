@@ -17,6 +17,16 @@ const checkNewTour = (req, res, next) => {
   next();
 };
 
+//Create Controller for Alias Route
+//Prefill req.query object with presetted params
+//Before in goes to getAllTours
+const aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
 //Get All Tours
 const getAllTours = async (req, res) => {
   console.log('req.query', req.query);
@@ -41,7 +51,7 @@ const getAllTours = async (req, res) => {
     if (req.query.sort) {
       console.log('req.query.sort :', req.query.sort);
       const sortBy = req.query.sort.split(',').join(' ');
-      console.log('sortBy :', sortBy);
+      // console.log('sortBy :', sortBy);
 
       query = query.sort(sortBy);
     } else {
@@ -52,11 +62,31 @@ const getAllTours = async (req, res) => {
     console.log('req.query.fields', req.query.fields);
     if (req.query.fields) {
       const fields = req.query.fields.split(',').join(' ');
-      console.log('fields :', fields);
+      // console.log('fields :', fields);
       query = query.select(fields);
     } else {
       // with - we exclude keys from query
       query = query.select('-__v');
+    }
+    //4) Pagination (limited quantity of responses per page)
+    //page=2&limit=10 1-10,page1,11-20,page2,21-30 page 3
+    console.log('req.query', req.query);
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+    console.log('page', page);
+    if (req.query.page) {
+      //count all documents
+      const numTours = await Tour.countDocuments();
+
+      if (skip >= numTours) {
+        return res.json({ message: 'Page not exists' });
+      }
+      const skipPage = (page - 1) * limit;
+      console.log('skipPage', skipPage);
+      query = query.skip(skipPage).limit(limit * 1);
+    } else {
+      query = query.skip().limit(limit * 1);
     }
 
     //Execute Query
@@ -170,4 +200,5 @@ module.exports = {
   updateTour,
   addNewTour,
   checkNewTour,
+  aliasTopTours,
 };
