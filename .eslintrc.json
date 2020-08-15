@@ -4,8 +4,10 @@
   "rules": {
     "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "spaced-comment": "off",
+    "node/no-unsupported-features/es-syntax": "off",
     "array-callback-return": "off",
     "no-delete-var": "off",
+    "lines-between-class-members": "off",
     "no-console": "off",
     "consistent-return": "off",
     "func-names": "off",
