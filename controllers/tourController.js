@@ -181,9 +181,31 @@ const getMonthlyPlan = async (req, res) => {
           },
         },
       },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numToursStarts: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: { month: '$_id' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: { numToursStarts: -1 },
+      },
+      {
+        $limit: 12,
+      },
     ]);
     res.json({
       status: 'Success',
+      results: plan.length,
       plan,
     });
   } catch (err) {
