@@ -173,6 +173,14 @@ const getMonthlyPlan = async (req, res) => {
       {
         $unwind: '$startDates',
       },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
     ]);
     res.json({
       status: 'Success',
