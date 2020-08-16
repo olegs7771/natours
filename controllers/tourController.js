@@ -65,7 +65,6 @@ const getTour = async (req, res) => {
 
 //Add New Tour
 const addNewTour = async (req, res) => {
-  console.log('toursJson', toursJson.length);
   try {
     console.log('req.body', req.body);
     const newTour = await Tour.create(req.body);
