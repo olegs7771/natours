@@ -83,8 +83,9 @@ const addNewTour = async (req, res) => {
 };
 //Update File Data
 const updateTour = async (req, res) => {
+  console.log('req.query', req.query);
   try {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.query, {
       new: true,
       runValidators: true,
     });

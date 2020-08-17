@@ -1,20 +1,14 @@
-const obj = {
-  duration: 5,
-  difficulty: 'easy',
-  price: 500,
-  page: 'new',
-  sort: 'true',
-};
+class Car{
+  constructor(name,price){
+    this.name=name;
+    this.price=price
+  }
+  getFullDetails(){
+    return this.name + ' '+this.price
+  }
+}
 
-const newObj = { ...obj };
-newObj.price = 400;
-newObj.duration = 7;
-const excludedFields = ['page', 'sort', 'limit', 'fields'];
-// excludedFields.forEach((elem) => delete newObj[elem]);
-excludedFields.map((elem) => {
-  console.log(elem);
-  delete newObj[elem];
-});
 
-console.log('obj', obj);
-console.log('newObj', newObj);
+let Fiat = new Car('Fiat',1000);
+
+console.log(Fiat.getFullDetails())
