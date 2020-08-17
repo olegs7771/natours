@@ -27,6 +27,7 @@ router.route('/stats').get(getToursStats);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 router.route('/').get(getAllTours).post(addNewTour);
+
 router.route('/:id').delete(deleteTour).get(getTour).patch(updateTour);
 
 module.exports = router;
