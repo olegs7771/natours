@@ -104,6 +104,18 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
+//Aggregation Middleware
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({
+    $match: {
+      secretTour: { $ne: true },
+    },
+  });
+  console.log('this agg', this.pipeline());
+
+  next();
+});
+
 //virtual params not persisted in DB
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
