@@ -56,11 +56,11 @@ const getTour = async (req, res, next) => {
       },
     });
   } catch (err) {
-    // next(err);
-    res.status(400).json({
-      response: 'Error1',
-      message: err,
-    });
+    next(err);
+    // res.status(400).json({
+    //   response: 'Error1',
+    //   message: err,
+    // });
   }
 };
 
