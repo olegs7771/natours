@@ -45,7 +45,7 @@ const getAllTours = async (req, res) => {
   }
 };
 //Get Tour
-const getTour = async (req, res) => {
+const getTour = async (req, res, next) => {
   try {
     console.log('req.params', req.params);
     const tour = await Tour.findById(req.params.id);
@@ -56,8 +56,9 @@ const getTour = async (req, res) => {
       },
     });
   } catch (err) {
+    // next(err);
     res.status(400).json({
-      response: 'Error',
+      response: 'Error1',
       message: err,
     });
   }
