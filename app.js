@@ -4,6 +4,7 @@ const tours = require('./routes/tours');
 const users = require('./routes/users');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+
 const app = express();
 
 if (process.env.NODE_ENV === 'development') {
