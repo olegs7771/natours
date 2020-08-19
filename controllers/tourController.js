@@ -2,6 +2,7 @@
 const Tour = require('../models/Tour');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 // Get Tours Sync!
 // const toursJson = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
@@ -42,6 +43,9 @@ const getAllTours = catchAsync(async (req, res, next) => {
 const getTour = catchAsync(async (req, res, next) => {
   console.log('req.params', req.params);
   const tour = await Tour.findById(req.params.id);
+  if (!tour) {
+    return next(new AppError('Wrong Tour Id', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -69,6 +73,9 @@ const updateTour = catchAsync(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  if (!tour) {
+    return next(new AppError('Wrong Tour Id', 404));
+  }
 
   res.status(201).json({
     status: 'Success',
@@ -83,6 +90,9 @@ const deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id, {
     select: 'name',
   });
+  if (!tour) {
+    return next(new AppError('Wrong Tour Id', 404));
+  }
   console.log('tour', tour);
   res.status(200).json({
     result: 'success',
