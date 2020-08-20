@@ -39,6 +39,7 @@ app.all('*', (req, res, next) => {
 });
 
 //Error Handling in Express (app)
+
 app.use(errorControl);
 
 module.exports = app;
