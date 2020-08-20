@@ -10,6 +10,12 @@ const handleDuplicateFieldsError = (errMsg) => {
   const message = `Duplicate field value:${reg}. Please use another value!`;
   return new AppError(message, 404);
 };
+const handleValidationError = (errors) => {
+  console.log('errors!!', errors);
+  const errorsObj = Object.values(errors).map((elem) => {
+    console.log('elem', elem.message);
+  });
+};
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -28,33 +34,29 @@ const sendErrorProd = (err, res) => {
     });
     //Programming or other error: dodn't leak error details
   } else {
-    //1) Log Error
-    console.error('ERROR ❗️', err);
-    //2) Send generic message
-
     res.status(500).json({
       status: 'Error',
-      message: err,
+      err,
     });
   }
 };
 
 module.exports = (err, req, res, next) => {
-  console.log('err1', err.toString());
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    console.log('err in dev', err.message);
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    // console.log('err in prod', err);
     let error = { ...err };
-    // console.log('error ', error);
-
+    console.log('error.name', error.errors.name.name);
     //Wrong string instead of /:id
     if (error.kind === 'ObjectId') error = handleObjectIdError(error);
+    //Dublicate name on unique
     if (error.code === 11000) error = handleDuplicateFieldsError(err.message);
+    //Validation in Schema fields
+    if (error.errors.name.name === 'ValidatorError')
+      error = handleValidationError(error.errors.name);
 
     sendErrorProd(error, res);
   } else {
