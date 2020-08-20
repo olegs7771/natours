@@ -76,6 +76,15 @@ const updateTour = catchAsync(async (req, res, next) => {
   if (!tour) {
     return next(new AppError('Wrong Tour Id', 404));
   }
+  console.log('tour price', tour.price);
+  // if (tour.price < req.query.priceDiscount) {
+  //   return next(
+  //     new AppError(
+  //       'Discount prixe  can not be higher then original price ',
+  //       404
+  //     )
+  //   );
+  // }
 
   res.status(201).json({
     status: 'Success',

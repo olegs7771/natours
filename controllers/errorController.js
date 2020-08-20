@@ -1,4 +1,12 @@
+const AppError = require('../utils/appError');
+
+const handleObjectIdError = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}`;
+  return new AppError(message, 404);
+};
+
 const sendErrorDev = (err, res) => {
+  console.log('err', err);
   res.status(err.statusCode).json({
     status: err.status,
     error: err,
@@ -33,7 +41,11 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
-    sendErrorProd(err, res);
+    let error = { ...err };
+    //Wrong string instead of /:id
+    if (error.kind === 'ObjectId') error = handleObjectIdError(error);
+
+    sendErrorProd(error, res);
   } else {
     console.log('test');
   }

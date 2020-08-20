@@ -52,7 +52,6 @@ const tourSchema = new mongoose.Schema(
         validator: function (val) {
           console.log('val', val);
           //this points to new document only on the creation of new document
-          console.log('this discount', this);
           return val < this.price;
         },
         message: 'Discount price {VALUE} can not be higher than original price',
