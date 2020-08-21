@@ -8,6 +8,7 @@ const {
   getUser,
   checkID,
 } = require('../controllers/userController');
+const { signup } = require('../controllers/authController');
 
 router.param('id', (req, res, next, val) => {
   console.log('param id 1', val);
@@ -18,7 +19,7 @@ router.param('id', (req, res, next, val) => {
   next();
 });
 router.param('id', checkID);
-
+router.route('/signup').post(signup);
 router.route('/').get(getAllUsers).post(addUser);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
