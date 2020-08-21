@@ -57,7 +57,7 @@ const getTour = catchAsync(async (req, res, next) => {
 //Add New Tour
 
 const addNewTour = catchAsync(async (req, res, next) => {
-  console.log('req.body', req.body);
+  // console.log('req.body', req.body);
   const newTour = await Tour.create(req.body);
   res.status(201).json({
     result: 'Success',
