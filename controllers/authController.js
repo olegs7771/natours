@@ -48,6 +48,14 @@ const login = catchAsync(async (req, res, next) => {
 
 //Protect Routes Middleware
 const protect = catchAsync(async (req, res, next) => {
+  //1) Get Token and check if it's valid
+
+  //2) Varification Token
+
+  //3) Check if user still exists
+
+  //4) Check if user changed password after token was issued
+
   console.log('route protection');
   next();
 });
