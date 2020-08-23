@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const {
   getAllUsers,
@@ -6,9 +7,9 @@ const {
   updateUser,
   deleteUser,
   getUser,
-  checkID,
+  // checkID,
 } = require('../controllers/userController');
-const { signup } = require('../controllers/authController');
+const { signup, login } = require('../controllers/authController');
 
 router.param('id', (req, res, next, val) => {
   console.log('param id 1', val);
@@ -18,8 +19,9 @@ router.param('id', (req, res, next, val) => {
   console.log('param id 2', val);
   next();
 });
-router.param('id', checkID);
+// router.param('id', checkID);
 router.route('/signup').post(signup);
+router.route('/login').post(login);
 router.route('/').get(getAllUsers).post(addUser);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 

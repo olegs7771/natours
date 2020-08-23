@@ -1,29 +1,33 @@
-const fs = require('fs');
+// const fs = require('fs');
+const User = require('../models/User');
+const catchAsync = require('../utils/catchAsync');
 //Get  Users users.json Sync!
-const users = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/users.json`)
-);
+// const users = JSON.parse(
+//   fs.readFileSync(`${__dirname}/../dev-data/data/users.json`)
+// );
 
 //Create Check ID middleware
-const checkID = (req, res, next, val) => {
-  const user = users.find((user) => user._id === val);
-  if (!user)
-    return res
-      .status(400)
-      .json({ result: 'error', message: 'User not found in check middleware' });
+// const checkID = (req, res, next, val) => {
+//   const user = users.find((user) => user._id === val);
+//   if (!user)
+//     return res
+//       .status(400)
+//       .json({ result: 'error', message: 'User not found in check middleware' });
 
-  next();
-};
+//   next();
+// };
 
 //Users
-//Get All Users
-
-const getAllUsers = (req, res) => {
-  return res.status(200).json({
-    result: 'success',
+//Get All Users from local json file
+const getAllUsers = catchAsync(async (req, res) => {
+  const users = await User.find();
+  res.status(201).json({
+    status: 'success',
+    results: users.length,
     users,
   });
-};
+});
+
 //Add User
 const addUser = (req, res) => {
   res.status(200).json({
@@ -42,13 +46,11 @@ const deleteUser = (req, res) => {
     result: 'user deleted',
   });
 };
-const getUser = (req, res) => {
-  console.log('getting user from handler');
-  const user = users.find((user) => user._id === req.params.id);
-
+const getUser = async (req, res) => {
+  const user = await User.findById(req.body.id);
   res.status(200).json({
     response: 'success',
-    data: { user },
+    user,
   });
 };
 
@@ -58,5 +60,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUser,
-  checkID,
+  // checkID,
 };

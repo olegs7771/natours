@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please choose a password'],
       minlength: 8,
+      select: false,
     },
     passwordConfirm: {
       type: String,
@@ -34,11 +35,11 @@ const userSchema = new mongoose.Schema(
         message: 'No match',
       },
     },
-  },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   }
+  // {
+  //   toJSON: { virtuals: true },
+  //   toObject: { virtuals: true },
+  // }
 );
 //Middleware
 userSchema.pre('save', async function (next) {
@@ -46,8 +47,19 @@ userSchema.pre('save', async function (next) {
   //Incrypt password
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
+
   next();
 });
+userSchema.post('save', function () {
+  console.log('this', this);
+});
+
+//To compare hashed password with incoming password we cant use this
+//password select:false
+//so we use arrow function
+
+userSchema.methods.correctPassword = async (incomingPassword, savedPassword) =>
+  await bcrypt.compare(incomingPassword, savedPassword);
 
 const User = mongoose.model('User', userSchema);
 
