@@ -35,6 +35,9 @@ const userSchema = new mongoose.Schema(
         message: 'No match',
       },
     },
+    passwordChangedAt: {
+      type: Date,
+    },
   }
   // {
   //   toJSON: { virtuals: true },
@@ -57,9 +60,15 @@ userSchema.post('save', function () {
 //To compare hashed password with incoming password we cant use this
 //password select:false
 //so we use arrow function
-
 userSchema.methods.correctPassword = async (incomingPassword, savedPassword) =>
   await bcrypt.compare(incomingPassword, savedPassword);
+//Check if password was changed.By default returns false
+userSchema.methods.passwordChanged = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    console.log(this.passwordChangedAt, JWTTimestamp);
+  }
+  return false;
+};
 
 const User = mongoose.model('User', userSchema);
 

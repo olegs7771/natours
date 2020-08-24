@@ -14,12 +14,8 @@ app.use(express.json());
 //WRITE OUR OWN MIDDLEWARE
 
 app.use((req, res, next) => {
-  console.log('First Middleware');
-  next();
-});
-
-app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log('req.headers', req.headers);
   next();
 });
 

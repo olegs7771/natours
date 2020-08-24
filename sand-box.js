@@ -1,22 +1,22 @@
-const myAsyncTask = (value) => {
-  return new Promise((resolve, reject) => {
-    if (value > 10) {
-      setTimeout(() => resolve('true number'), 1000);
-    } else {
-      setTimeout(() => reject(new Error(`${value} is a wrong number`)), 1000);
-    }
-  });
+const { promisify } = require('util');
+
+const sum = (x, y, cb) => {
+  const result = x + y;
+
+  cb(result);
 };
 
-const asyncCatch = (fn) => {
-  return (result) => {
-    fn(result).catch((err) => console.log('err', err));
-  };
+// sum(5, 7, (cb) => {
+//   console.log('cb', cb);
+// });
+
+const asyncFunc = async (x, y) => {
+  try {
+    const promiseResult = await promisify(sum)(x, y);
+    return promiseResult;
+  } catch (err) {
+    console.log('err', err);
+  }
 };
 
-const check = asyncCatch(async () => {
-  const result = await myAsyncTask(1);
-  console.log('result', result);
-});
-check();
-console.log('test');
+console.log('asyncFunc', asyncFunc(5, 4));
