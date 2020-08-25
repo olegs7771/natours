@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema(
     photo: {
       type: String,
     },
+    role: {
+      type: String,
+      enum: ['user', 'guide', 'lead-guide', 'admin'],
+      default: 'user',
+    },
 
     password: {
       type: String,
@@ -65,10 +70,13 @@ userSchema.methods.correctPassword = async (incomingPassword, savedPassword) =>
 //Check if password was changed.By default returns false
 userSchema.methods.passwordChanged = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
-    console.log(this.passwordChangedAt, JWTTimestamp);
+    const passwordChangedTimestamp = this.passwordChangedAt.getTime() / 1000;
+    return JWTTimestamp < passwordChangedTimestamp; //100<200 changed returns true
+    //if password wasn't changed return false
   }
-  return false;
 };
+
+//Restrict user from delete tours only admin or lead-guide
 
 const User = mongoose.model('User', userSchema);
 

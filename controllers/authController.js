@@ -16,6 +16,7 @@ const signup = catchAsync(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    role: req.body.role,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
   });
@@ -50,6 +51,7 @@ const login = catchAsync(async (req, res, next) => {
 
 //Protect Routes Middleware
 const protect = catchAsync(async (req, res, next) => {
+  console.log('req.query in protect', req.query);
   let token;
   //1) Get Token and check if it's valid
   if (
@@ -80,9 +82,31 @@ const protect = catchAsync(async (req, res, next) => {
   }
 
   //4) Check if user changed password after token was issued
-  user.passwordChanged(decoded.iat);
-  console.log('route protection');
+  if (user.passwordChanged(decoded.iat)) {
+    //if true then passwordChangedAt > decoded.iat cut pipeline
+    return next(
+      new AppError(
+        'The user has changed password recently. Please log in again',
+        401
+      )
+    );
+  }
+  console.log('route protection grants pass');
+  //store found user in pipiline in req object
+  req.user = user;
   next();
 });
 
-module.exports = { signup, login, protect };
+//Restrict Users from delete tours only admin or lead-guide permmited
+const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    console.log('roles', roles);
+    console.log('req.user', req.user);
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError("You don't have permission to delete tours"));
+    }
+    console.log('permission');
+  };
+};
+
+module.exports = { signup, login, protect, restrictTo };
