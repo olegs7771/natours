@@ -51,7 +51,7 @@ const login = catchAsync(async (req, res, next) => {
 
 //Protect Routes Middleware
 const protect = catchAsync(async (req, res, next) => {
-  console.log('req.query in protect', req.query);
+  console.log('req.params in protect', req.params);
   let token;
   //1) Get Token and check if it's valid
   if (
@@ -100,13 +100,22 @@ const protect = catchAsync(async (req, res, next) => {
 //Restrict Users from delete tours only admin or lead-guide permmited
 const restrictTo = (...roles) => {
   return (req, res, next) => {
+    console.log('req.params in restrict', req.params);
     console.log('roles', roles);
     console.log('req.user', req.user);
     if (!roles.includes(req.user.role)) {
-      return next(new AppError("You don't have permission to delete tours"));
+      return next(
+        new AppError("You don't have permission to delete tours", 403)
+      );
     }
-    console.log('permission');
+    next();
+  };
+};
+const checkTour = (name) => {
+  return (req, res, next) => {
+    console.log('req.route.path', req.route.path);
+    console.log('name', name);
   };
 };
 
-module.exports = { signup, login, protect, restrictTo };
+module.exports = { signup, login, protect, restrictTo, checkTour };

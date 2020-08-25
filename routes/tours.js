@@ -10,7 +10,11 @@ const {
   getToursStats,
   getMonthlyPlan,
 } = require('../controllers/tourController');
-const { protect, restrictTo } = require('../controllers/authController');
+const {
+  protect,
+  restrictTo,
+  checkTour,
+} = require('../controllers/authController');
 
 //Create Param Middleware
 router.param('id', (req, res, next, val) => {
@@ -27,7 +31,7 @@ router.route('/stats').get(getToursStats);
 //Bussiness problem function
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
-router.route('/').get(protect, getAllTours).post(addNewTour);
+router.route('/').get(protect, checkTour('John'), getAllTours).post(addNewTour);
 
 router
   .route('/:id')
