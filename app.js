@@ -13,12 +13,6 @@ app.use(express.json());
 
 //WRITE OUR OWN MIDDLEWARE
 
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  console.log('req.headers', req.headers);
-  next();
-});
-
 app.use('/api/v1/tours', tours);
 app.use('/api/v1/users', users);
 

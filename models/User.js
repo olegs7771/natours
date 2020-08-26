@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
@@ -40,9 +41,9 @@ const userSchema = new mongoose.Schema(
         message: 'No match',
       },
     },
-    passwordChangedAt: {
-      type: Date,
-    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   }
   // {
   //   toJSON: { virtuals: true },
@@ -76,7 +77,19 @@ userSchema.methods.passwordChanged = function (JWTTimestamp) {
   }
 };
 
-//Restrict user from delete tours only admin or lead-guide
+//Reset Password method
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  console.log('resetToken', resetToken);
+  console.log('this.passwordResetToken', this.passwordResetToken);
+  this.passwordResetExpires = Date.now() + 600 * 1000; //10min in milliseconds
+
+  return resetToken;
+};
 
 const User = mongoose.model('User', userSchema);
 
