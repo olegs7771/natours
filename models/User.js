@@ -90,6 +90,16 @@ userSchema.methods.createPasswordResetToken = function () {
 
   return resetToken;
 };
+//In reset password modify passwordChangedAt
+userSchema.pre('save', function (next) {
+  //if password not changed or is new then pass through this middleware
+  if (!this.isModified('password') || this.isNew) return next();
+  //if password modified
+  //token can be issued before new password saved to DB
+  // to avoid situation we substract 1 sec from passwordChangedAt
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
 
 const User = mongoose.model('User', userSchema);
 
