@@ -111,11 +111,5 @@ const restrictTo = (...roles) => {
     next();
   };
 };
-const checkTour = (name) => {
-  return (req, res, next) => {
-    console.log('req.route.path', req.route.path);
-    console.log('name', name);
-  };
-};
 
-module.exports = { signup, login, protect, restrictTo, checkTour };
+module.exports = { signup, login, protect, restrictTo };
