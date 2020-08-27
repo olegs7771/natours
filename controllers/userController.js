@@ -7,6 +7,7 @@ const filterObj = (obj, ...allowedFields) => {
   Object.keys(obj).map((elem) => {
     if (allowedFields.includes(elem)) newObj[elem] = obj[elem];
   });
+  return newObj;
 };
 
 //Users
@@ -27,12 +28,15 @@ const userUpdateMe = catchAsync(async (req, res, next) => {
   }
   //Filter Update Object. Prevent from updating :role,etc...
   const filteredBody = filterObj(req.body, 'name', 'email');
+  console.log('filteredBody', filteredBody);
   const filterUser = await User.findByIdAndUpdate(req.user._id, filteredBody, {
     new: true,
     runValidators: true,
   });
+
   res.json({
     status: 'success',
+    filterUser,
   });
 });
 
