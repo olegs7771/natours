@@ -11,6 +11,13 @@ const signToken = (id) => {
     expiresIn: process.env.JWT_EXP,
   });
 };
+const createSendToken = (user, StatusCode, res) => {
+  const token = signToken(user._id);
+  res.status(StatusCode).json({
+    status: 'Success',
+    token,
+  });
+};
 
 const signup = catchAsync(async (req, res, next) => {
   console.log('req.body', req.body);
@@ -44,11 +51,7 @@ const login = catchAsync(async (req, res, next) => {
   )
     return next(new AppError('Invalid Email or Password', 401));
   //3)If everything ok,send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'Success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 //Protect Routes Middleware
@@ -177,11 +180,33 @@ const resetPassword = catchAsync(async (req, res, next) => {
 
   //4)Log the user in, send JWT to the client
   await user.save();
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'Success',
-    token,
-  });
+  createSendToken(user, 200, res);
+});
+
+//Update Password
+const updatePassword = catchAsync(async (req, res, next) => {
+  console.log('req.body', req.body);
+  console.log('req.user', req.user);
+  //1)Get User from DB
+  const user = await User.findById(req.user._id).select('+password');
+  console.log('user', user);
+
+  //2)Check if POSTed password is correct
+  const isPasswordValid = await user.correctPassword(
+    req.body.password.toString(),
+    user.password
+  );
+  console.log('isPasswordValid', isPasswordValid);
+  if (!isPasswordValid) {
+    return next(new AppError('Invalid password. Please try again', 400));
+  }
+  //3)Update A password
+  user.password = req.body.newpassword;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+  console.log('user saved', user);
+  //4)Log User with new password, send token
+  createSendToken(user, 200, res);
 });
 
 module.exports = {
@@ -191,4 +216,5 @@ module.exports = {
   restrictTo,
   forgotPassword,
   resetPassword,
+  updatePassword,
 };

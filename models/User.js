@@ -59,9 +59,6 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
-userSchema.post('save', function () {
-  console.log('this', this);
-});
 
 //To compare hashed password with incoming password we cant use this
 //password select:false
