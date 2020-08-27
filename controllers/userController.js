@@ -48,7 +48,7 @@ const updateUser = (req, res) => {
     result: 'user update',
   });
 };
-//Delete User
+///Delete User
 const deleteUser = (req, res) => {
   res.status(200).json({
     result: 'user deleted',
