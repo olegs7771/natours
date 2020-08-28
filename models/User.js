@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
   }
   // {
   //   toJSON: { virtuals: true },
@@ -51,6 +56,13 @@ const userSchema = new mongoose.Schema(
   // }
 );
 //Middleware
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
+
+//Methods
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   //Incrypt password
