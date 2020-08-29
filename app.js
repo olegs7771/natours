@@ -1,14 +1,23 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const tours = require('./routes/tours');
 const users = require('./routes/users');
 const errorControl = require('./controllers/errorController');
 
 const app = express();
 
+//Global Middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+//deny of service (DoS) attack
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many requests.Try again in 15 min',
+});
+app.use(limiter);
 app.use(express.json());
 
 //WRITE OUR OWN MIDDLEWARE
