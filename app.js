@@ -11,7 +11,7 @@ const app = express();
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-//deny of service (DoS) attack
+//denail of service (DoS) attack
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
