@@ -17,7 +17,7 @@ const limiter = rateLimit({
   max: 100,
   message: 'Too many requests.Try again in 15 min',
 });
-app.use(limiter);
+app.use('/api', limiter);
 app.use(express.json());
 
 //WRITE OUR OWN MIDDLEWARE
