@@ -28,7 +28,7 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have difficulty level'],
       enum: {
         values: ['easy', 'medium', 'difficult'],
-        message: 'Difficulty is either :easy,medium,difficult',
+        message: 'Difficulty is either: easy,medium,difficult',
       },
     },
     price: {
@@ -76,6 +76,20 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
     },
     startDates: [Date],
+    startLocation: {
+      //GeoJSON
+      type: {
+        type: String,
+        default: 'Point',
+        enum: {
+          values: ['Point'],
+          message: 'Accepts only Point ',
+        },
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
     secretTour: {
       type: Boolean,
       default: false,
