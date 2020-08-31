@@ -129,6 +129,7 @@ const restrictTo = (...roles) => {
 
 //Password Recovery
 const forgotPassword = catchAsync(async (req, res, next) => {
+  console.log('req.body', req.body);
   //1)Get User by email
   const user = await User.findOne({ email: req.body.email });
   if (!user) {

@@ -56,7 +56,6 @@ const userSchema = new mongoose.Schema(
   // }
 );
 //Middleware
-
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
   next();

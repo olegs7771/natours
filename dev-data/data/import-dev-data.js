@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
 const dotenv = require('dotenv');
-const Tour = require('./../../models/Tour');
+const Tour = require('../../models/Tour');
 
 dotenv.config({ path: './config.env' });
 mongoose
@@ -25,7 +25,7 @@ const importData = async () => {
     await Tour.create(tours);
     console.log('data successfully loaded');
   } catch (err) {
-    console.log('err :', err);
+    console.log('err to upload :', err);
   }
   process.exit();
 };
@@ -45,5 +45,5 @@ if (process.argv[2] === '--import') {
 } else if (process.argv[2] === '--delete') {
   deleteData();
 }
-console.log(process.argv);
+console.log('process.argv', process.argv);
 //
