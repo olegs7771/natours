@@ -16,9 +16,7 @@ mongoose
   })
   .catch((err) => console.log('err:', err));
 //Read JSON File
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 //Import Data into DB
 const importData = async () => {
   try {
