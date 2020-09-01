@@ -162,6 +162,13 @@ tourSchema.pre(/^find/, function (next) {
   this.start = Date.now();
   next();
 });
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v',
+  });
+  next();
+});
 //RUNS after query executed
 //this points to doc found in DB
 tourSchema.post(/^find/, function (docs, next) {

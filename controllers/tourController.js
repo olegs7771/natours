@@ -42,10 +42,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 //Get Tour
 const getTour = catchAsync(async (req, res, next) => {
   console.log('req.params', req.params);
-  const tour = await Tour.findById(req.params.id).populate({
-    path: 'guides',
-    select: '-__v',
-  });
+  const tour = await Tour.findById(req.params.id);
   if (!tour) {
     return next(new AppError('Wrong Tour Id', 404));
   }
