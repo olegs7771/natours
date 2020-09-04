@@ -7,6 +7,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const tours = require('./routes/tours');
 const users = require('./routes/users');
+const reviews = require('./routes/reviews');
 const errorControl = require('./controllers/errorController');
 
 const app = express();
@@ -54,6 +55,7 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use('/api/v1/tours', tours);
 app.use('/api/v1/users', users);
+app.use('/api/v1/reviews', reviews);
 
 // Not existing routes
 app.all('*', (req, res, next) => {
