@@ -16,13 +16,23 @@ const addReview = catchAsync(async (req, res, next) => {
     user: req.user.id,
   };
   console.log('newReview', newReview);
-  const review = await (await Review.create(newReview))
-    .populate('user')
-    .populate('tour');
+  const review = await Review.create(newReview).populate('user');
+
   res.status(201).json({
     status: 'success',
     data: { review },
   });
 });
 
-module.exports = { addReview };
+//Get All Review
+const getAllReviews = catchAsync(async (req, res, next) => {
+  console.log('geeting all');
+  const reviews = await Review.find();
+  res.status(201).json({
+    status: 'success',
+    reviews: reviews.length,
+    data: { reviews },
+  });
+});
+
+module.exports = { addReview, getAllReviews };

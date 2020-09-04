@@ -43,6 +43,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 const getTour = catchAsync(async (req, res, next) => {
   console.log('req.params', req.params);
   const tour = await Tour.findById(req.params.id);
+  console.log('tour', tour);
   if (!tour) {
     return next(new AppError('Wrong Tour Id', 404));
   }

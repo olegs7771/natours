@@ -115,8 +115,6 @@ const protect = catchAsync(async (req, res, next) => {
 //Restrict Users from delete tours only admin or lead-guide permmited
 const restrictTo = (...roles) => {
   return (req, res, next) => {
-    console.log('req.params in restrict', req.params);
-    console.log('roles', roles);
     console.log('req.user', req.user);
     if (!roles.includes(req.user.role)) {
       return next(

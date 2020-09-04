@@ -68,7 +68,8 @@ const deleteUser = (req, res) => {
   });
 };
 const getUser = async (req, res) => {
-  const user = await User.findById(req.body.id);
+  console.log('req.params', req.params);
+  const user = await User.findById(req.params.id);
   res.status(200).json({
     response: 'success',
     user,
