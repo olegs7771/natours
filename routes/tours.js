@@ -11,6 +11,11 @@ const {
   getMonthlyPlan,
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('../controllers/authController');
+//Merge Rauters
+const reviewRauter = require('./reviews');
+
+//Reroute from tour route to review route
+router.use('/:tourId/reviews', reviewRauter);
 
 //Create Param Middleware
 router.param('id', (req, res, next, val) => {

@@ -17,6 +17,7 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
+  restrictTo,
 } = require('../controllers/authController');
 
 router.param('id', (req, res, next, val) => {

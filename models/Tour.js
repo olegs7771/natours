@@ -158,17 +158,20 @@ tourSchema.pre('save', function (next) {
 // });
 //Define rejex /^find/ to triger all find comands
 tourSchema.pre(/^find/, function (next) {
-  this.find({ secretTour: { $ne: false } });
+  //this.find({ secretTour: { $ne: false } }); //find only secret tours
+
   this.start = Date.now();
   next();
 });
+
 tourSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
-    select: '-__v',
+    select: 'name',
   });
   next();
 });
+
 //RUNS after query executed
 //this points to doc found in DB
 tourSchema.post(/^find/, function (docs, next) {
@@ -184,7 +187,6 @@ tourSchema.pre('aggregate', function (next) {
     },
   });
   console.log('this agg', this.pipeline());
-
   next();
 });
 

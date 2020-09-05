@@ -5,18 +5,22 @@ const AppError = require('../utils/appError');
 
 //Add New Review
 const addReview = catchAsync(async (req, res, next) => {
+  //Allow nested routes
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  if (!req.body.user) req.body.user = req.user.id;
   //1) Check if Current User already left review for Current Tour
-  console.log('req.user', req.user);
-  console.log('req.body', req.body);
-  console.log('req.params', req.params);
+
+  // console.log('req.body.tour', req.body.tour);
+  // console.log('req.body.user', req.body.user);
+  // console.log('req.params', req.params);
   const newReview = {
     review: req.body.review,
     rating: req.body.rating,
-    tour: req.params.id,
-    user: req.user.id,
+    tour: req.body.tour,
+    user: req.body.user,
   };
-  console.log('newReview', newReview);
-  const review = await Review.create(newReview).populate('user');
+  // console.log('newReview', newReview);
+  const review = await Review.create(newReview);
 
   res.status(201).json({
     status: 'success',

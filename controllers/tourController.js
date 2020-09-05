@@ -20,7 +20,7 @@ const aliasTopTours = (req, res, next) => {
 
 //Get All Tours
 const getAllTours = catchAsync(async (req, res, next) => {
-  console.log('req.query', req.query);
+  console.log('req.query1', req.query);
   //Execute Query
   const features = new APIFeatures(Tour.find(), req.query)
     .filter()
@@ -42,8 +42,8 @@ const getAllTours = catchAsync(async (req, res, next) => {
 //Get Tour
 const getTour = catchAsync(async (req, res, next) => {
   console.log('req.params', req.params);
-  const tour = await Tour.findById(req.params.id);
-  console.log('tour', tour);
+  const tour = await Tour.findById(req.params.id).populate({ path: 'reviews' });
+
   if (!tour) {
     return next(new AppError('Wrong Tour Id', 404));
   }
