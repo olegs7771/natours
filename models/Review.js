@@ -33,6 +33,7 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 //Middleware
+//Get Reviews for particular Tour
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',

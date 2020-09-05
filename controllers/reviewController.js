@@ -30,8 +30,12 @@ const addReview = catchAsync(async (req, res, next) => {
 
 //Get All Review
 const getAllReviews = catchAsync(async (req, res, next) => {
+  //Allow nested routes
+  let filter = {};
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+
   console.log('geeting all');
-  const reviews = await Review.find();
+  const reviews = await Review.find(filter);
   res.status(201).json({
     status: 'success',
     reviews: reviews.length,

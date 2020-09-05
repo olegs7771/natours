@@ -18,11 +18,11 @@ const reviewRauter = require('./reviews');
 router.use('/:tourId/reviews', reviewRauter);
 
 //Create Param Middleware
-router.param('id', (req, res, next, val) => {
-  console.log('got id', req.params.id);
-  console.log('got id val', val);
-  next();
-});
+// router.param('id', (req, res, next, val) => {
+//   console.log('got id', req.params.id);
+//   console.log('got id val', val);
+//   next();
+// });
 
 //Mounting Router on the route
 //Create alias route
