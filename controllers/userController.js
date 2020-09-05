@@ -1,6 +1,7 @@
 const AppError = require('../utils/appError');
 const User = require('../models/User');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./handlerFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -40,14 +41,15 @@ const userUpdateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-//User Deletes himself
-const deleteMe = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user.id, { active: false }, { new: true });
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+//User Deleted by Admin(completly)
+const deleteUser = factory.deleteOne(User);
+// const deleteMe = catchAsync(async (req, res, next) => {
+//   await User.findByIdAndUpdate(req.user.id, { active: false }, { new: true });
+//   res.status(204).json({
+//     status: 'success',
+//     data: null,
+//   });
+// });
 
 //Add User
 const addUser = (req, res) => {
@@ -61,12 +63,17 @@ const updateUser = (req, res) => {
     result: 'user update',
   });
 };
-///Delete User
-const deleteUser = (req, res) => {
+///Delete User by User(active:false)
+const deleteMe = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.user.id, { active: false });
+  if (!user) {
+    return next(new AppError('No User found', 404));
+  }
   res.status(200).json({
-    result: 'user deleted',
+    result: 'user active:false',
+    data: { user },
   });
-};
+});
 const getUser = async (req, res) => {
   console.log('req.params', req.params);
   const user = await User.findById(req.params.id);

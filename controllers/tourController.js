@@ -3,6 +3,7 @@ const Tour = require('../models/Tour');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 // Get Tours Sync!
 // const toursJson = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
@@ -85,20 +86,21 @@ const updateTour = catchAsync(async (req, res, next) => {
   });
 });
 //Delete File Data
-const deleteTour = catchAsync(async (req, res, next) => {
-  console.log('req.params', req.params);
-  const tour = await Tour.findByIdAndDelete(req.params.id, {
-    select: 'name',
-  });
-  if (!tour) {
-    return next(new AppError('Wrong Tour Id', 404));
-  }
-  console.log('tour', tour);
-  res.status(200).json({
-    result: 'success',
-    message: `${tour.name} was successfully deleted`,
-  });
-});
+const deleteTour = factory.deleteOne(Tour);
+// const deleteTour = catchAsync(async (req, res, next) => {
+//   console.log('req.params', req.params);
+//   const tour = await Tour.findByIdAndDelete(req.params.id, {
+//     select: 'name',
+//   });
+//   if (!tour) {
+//     return next(new AppError('Wrong Tour Id', 404));
+//   }
+//   console.log('tour', tour);
+//   res.status(200).json({
+//     result: 'success',
+//     message: `${tour.name} was successfully deleted`,
+//   });
+// });
 
 //Aggregate data
 const getToursStats = catchAsync(async (req, res, next) => {

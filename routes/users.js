@@ -39,7 +39,7 @@ router.route('/updatePassword').patch(protect, updatePassword);
 //Update Me User Data
 router.route('/updateMe').patch(protect, userUpdateMe);
 //Delete Me User
-router.route('/deleteMe').delete(protect, deleteMe);
+router.route('/deleteMe').patch(protect, deleteMe); //only update active:false
 
 router.route('/').get(getAllUsers).post(addUser);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
