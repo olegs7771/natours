@@ -11,19 +11,6 @@ const TourUserId = (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
   next();
 };
-const addReview = factory.createOne(Review);
-// const addReview = catchAsync(async (req, res, next) => {
-//   //Allow nested routes
-//   // if (!req.body.tour) req.body.tour = req.params.tourId;
-//   // if (!req.body.user) req.body.user = req.user.id;
-
-//   const review = await Review.create(req.body);
-
-//   res.status(201).json({
-//     status: 'success',
-//     data: { review },
-//   });
-// });
 
 //Get All Review
 const getAllReviews = catchAsync(async (req, res, next) => {
@@ -40,6 +27,7 @@ const getAllReviews = catchAsync(async (req, res, next) => {
   });
 });
 
+const addReview = factory.createOne(Review);
 const deleteReview = factory.deleteOne(Review);
 const updateReview = factory.updateOne(Review);
 
