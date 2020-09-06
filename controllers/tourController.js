@@ -56,51 +56,9 @@ const getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-//Add New Tour
-
-const addNewTour = catchAsync(async (req, res, next) => {
-  console.log('req.body', req.body);
-  const newTour = await Tour.create(req.body);
-  res.status(201).json({
-    result: 'Success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
-//Update File Data
-const updateTour = catchAsync(async (req, res, next) => {
-  console.log('req.query', req.query);
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.query, {
-    new: true,
-    runValidators: true,
-  });
-  if (!tour) {
-    return next(new AppError('Wrong Tour Id', 404));
-  }
-  res.status(201).json({
-    status: 'Success',
-    data: {
-      tour,
-    },
-  });
-});
-//Delete File Data
+const addNewTour = factory.createOne(Tour);
+const updateTour = factory.updateOne(Tour);
 const deleteTour = factory.deleteOne(Tour);
-// const deleteTour = catchAsync(async (req, res, next) => {
-//   console.log('req.params', req.params);
-//   const tour = await Tour.findByIdAndDelete(req.params.id, {
-//     select: 'name',
-//   });
-//   if (!tour) {
-//     return next(new AppError('Wrong Tour Id', 404));
-//   }
-//   console.log('tour', tour);
-//   res.status(200).json({
-//     result: 'success',
-//     message: `${tour.name} was successfully deleted`,
-//   });
-// });
 
 //Aggregate data
 const getToursStats = catchAsync(async (req, res, next) => {

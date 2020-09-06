@@ -6,11 +6,13 @@ const {
   addReview,
   getAllReviews,
   deleteReview,
+  updateReview,
+  TourUserId,
 } = require('../controllers/reviewController');
 
 router
   .route('/')
-  .post(protect, restrictTo('user'), addReview)
+  .post(protect, restrictTo('user'), TourUserId, addReview)
   .get(protect, getAllReviews);
-router.route('/:id').delete(deleteReview);
+router.route('/:id').patch(updateReview).delete(deleteReview);
 module.exports = router;

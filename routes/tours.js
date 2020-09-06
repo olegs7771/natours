@@ -17,13 +17,6 @@ const reviewRauter = require('./reviews');
 //Reroute from tour route to review route
 router.use('/:tourId/reviews', reviewRauter);
 
-//Create Param Middleware
-// router.param('id', (req, res, next, val) => {
-//   console.log('got id', req.params.id);
-//   console.log('got id val', val);
-//   next();
-// });
-
 //Mounting Router on the route
 //Create alias route
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);

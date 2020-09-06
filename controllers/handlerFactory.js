@@ -14,4 +14,34 @@ const deleteOne = (Model) =>
       message: `document was successfully deleted`,
     });
   });
-module.exports = { deleteOne };
+
+const updateOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    console.log('req.body', req.body);
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!doc) {
+      return next(new AppError('No document found', 404));
+    }
+    res.status(201).json({
+      status: 'Success',
+      data: {
+        doc,
+      },
+    });
+  });
+const createOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    console.log('req.body', req.body);
+    const doc = await Model.create(req.body);
+    res.status(201).json({
+      result: 'Success',
+      data: {
+        tour: doc,
+      },
+    });
+  });
+
+module.exports = { deleteOne, updateOne, createOne };

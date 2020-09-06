@@ -41,15 +41,8 @@ const userUpdateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-//User Deleted by Admin(completly)
+//User Deleted by Admin(completely)
 const deleteUser = factory.deleteOne(User);
-// const deleteMe = catchAsync(async (req, res, next) => {
-//   await User.findByIdAndUpdate(req.user.id, { active: false }, { new: true });
-//   res.status(204).json({
-//     status: 'success',
-//     data: null,
-//   });
-// });
 
 //Add User
 const addUser = (req, res) => {
@@ -58,11 +51,9 @@ const addUser = (req, res) => {
   });
 };
 //Update User
-const updateUser = (req, res) => {
-  res.status(200).json({
-    result: 'user update',
-  });
-};
+//Don't Update Password with this!
+const updateUser = factory.updateOne(User);
+
 ///Delete User by User(active:false)
 const deleteMe = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(req.user.id, { active: false });

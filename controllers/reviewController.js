@@ -5,25 +5,25 @@ const factory = require('./handlerFactory');
 // const AppError = require('../utils/appError');
 
 //Add New Review
-const addReview = catchAsync(async (req, res, next) => {
-  //Allow nested routes
+
+const TourUserId = (req, res, next) => {
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
-  //1) Check if Current User already left review for Current Tour
-  const newReview = {
-    review: req.body.review,
-    rating: req.body.rating,
-    tour: req.body.tour,
-    user: req.body.user,
-  };
-  // console.log('newReview', newReview);
-  const review = await Review.create(newReview);
+  next();
+};
+const addReview = factory.createOne(Review);
+// const addReview = catchAsync(async (req, res, next) => {
+//   //Allow nested routes
+//   // if (!req.body.tour) req.body.tour = req.params.tourId;
+//   // if (!req.body.user) req.body.user = req.user.id;
 
-  res.status(201).json({
-    status: 'success',
-    data: { review },
-  });
-});
+//   const review = await Review.create(req.body);
+
+//   res.status(201).json({
+//     status: 'success',
+//     data: { review },
+//   });
+// });
 
 //Get All Review
 const getAllReviews = catchAsync(async (req, res, next) => {
@@ -41,5 +41,12 @@ const getAllReviews = catchAsync(async (req, res, next) => {
 });
 
 const deleteReview = factory.deleteOne(Review);
+const updateReview = factory.updateOne(Review);
 
-module.exports = { addReview, getAllReviews, deleteReview };
+module.exports = {
+  TourUserId,
+  addReview,
+  getAllReviews,
+  deleteReview,
+  updateReview,
+};
