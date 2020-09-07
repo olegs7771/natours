@@ -20,7 +20,6 @@ const {
   updatePassword,
   restrictTo,
 } = require('../controllers/authController');
-const { getOne } = require('../controllers/handlerFactory');
 
 router.param('id', (req, res, next, val) => {
   console.log('param id 1', val);
@@ -36,19 +35,25 @@ router.route('/login').post(login);
 //Reset forgotten password
 router.route('/forgotPassword').post(forgotPassword);
 router.route('/resetPassword/:token').patch(resetPassword);
-//Update Password
-router.route('/updatePassword').patch(protect, updatePassword);
-//Update Me User Data
-router.route('/updateMe').patch(protect, restrictTo('admin'), userUpdateMe);
-//Delete Me User
-router.route('/deleteMe').patch(protect, deleteMe); //only update active:false
 
-router.route('/me').get(protect, getMe, getUser);
+//All middleware work in siquence . This router is mini app, so
+// we can put:
+router.use(protect);
+//Than all routers from here will be with protect
+// router.route('/updatePassword').patch(protect, updatePassword);
+
+//Update Password
+router.route('/updatePassword').patch(updatePassword);
+//Update Me User Data
+router.route('/updateMe').patch(restrictTo('admin'), userUpdateMe);
+//Delete Me User
+router.route('/deleteMe').patch(deleteMe); //only update active:false
+
+router.route('/me').get(getMe, getUser);
+//Those routers only for admin
+router.use(restrictTo('admin'));
+
 router.route('/').get(getAllUsers).post(addUser);
-router
-  .route('/:id')
-  .get(getUser)
-  .patch(protect, restrictTo('admin'), updateUser)
-  .delete(deleteUser);
+router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = router;
