@@ -8,11 +8,12 @@ const {
   deleteReview,
   updateReview,
   TourUserId,
+  getReview,
 } = require('../controllers/reviewController');
 
 router
   .route('/')
   .post(protect, restrictTo('user'), TourUserId, addReview)
   .get(protect, getAllReviews);
-router.route('/:id').patch(updateReview).delete(deleteReview);
+router.route('/:id').patch(updateReview).delete(deleteReview).get(getReview);
 module.exports = router;

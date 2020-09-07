@@ -11,16 +11,13 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-//Users
-//Get All Users from local json file
-const getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-  res.status(201).json({
-    status: 'success',
-    results: users.length,
-    users,
-  });
-});
+//To get user's own user we create middleware to pass user from req.user.id to req.user.params in order to use factory controller
+const getMe = (req, res, next) => {
+  console.log('req.user1', req.user);
+  req.params.id = req.user.id;
+  next();
+};
+
 //User Updates himsef
 const userUpdateMe = catchAsync(async (req, res, next) => {
   //If User tries to update password ,thraw error
@@ -41,9 +38,6 @@ const userUpdateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-//User Deleted by Admin(completely)
-const deleteUser = factory.deleteOne(User);
-
 //Add User
 const addUser = (req, res) => {
   res.status(200).json({
@@ -53,6 +47,10 @@ const addUser = (req, res) => {
 //Update User
 //Don't Update Password with this!
 const updateUser = factory.updateOne(User);
+const getUser = factory.getOne(User);
+const getAllUsers = factory.getAll(User);
+//User Deleted by Admin(completely)
+const deleteUser = factory.deleteOne(User);
 
 ///Delete User by User(active:false)
 const deleteMe = catchAsync(async (req, res, next) => {
@@ -65,14 +63,6 @@ const deleteMe = catchAsync(async (req, res, next) => {
     data: { user },
   });
 });
-const getUser = async (req, res) => {
-  console.log('req.params', req.params);
-  const user = await User.findById(req.params.id);
-  res.status(200).json({
-    response: 'success',
-    user,
-  });
-};
 
 module.exports = {
   getAllUsers,
@@ -82,4 +72,5 @@ module.exports = {
   getUser,
   userUpdateMe,
   deleteMe,
+  getMe,
 };

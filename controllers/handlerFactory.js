@@ -1,6 +1,7 @@
 //This function returns controllers
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const APIFeatures = require('../utils/apiFeatures');
 
 const deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -44,4 +45,46 @@ const createOne = (Model) =>
     });
   });
 
-module.exports = { deleteOne, updateOne, createOne };
+const getOne = (Model, popOption) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+    if (popOption) query = query.populate(popOption);
+    console.log('req.params', req.params);
+    const doc = await query;
+    if (!doc) {
+      return next(new AppError('Wrong doc Id', 404));
+    }
+    res.status(200).json({
+      status: 'success',
+      data: {
+        doc,
+      },
+    });
+  });
+
+const getAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    //Allow nested routes
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+    console.log('req.query1', req.query);
+    //Execute Query
+    const features = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const docs = await features.query;
+
+    //Send Response
+    res.status(200).json({
+      status: 'success',
+      results: docs.length,
+      data: {
+        docs,
+      },
+    });
+  });
+
+module.exports = { deleteOne, updateOne, createOne, getOne, getAll };

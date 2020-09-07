@@ -90,7 +90,7 @@ const protect = catchAsync(async (req, res, next) => {
 
   //3) Check if user still exists
   const user = await User.findById(decoded.id);
-  console.log('user', user);
+  console.log('user in protect', user);
 
   if (!user) {
     return next(new AppError('The user of this token no longer exists', 401));

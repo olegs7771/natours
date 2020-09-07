@@ -9,6 +9,7 @@ const {
   getUser,
   userUpdateMe,
   deleteMe,
+  getMe,
 } = require('../controllers/userController');
 const {
   protect,
@@ -19,6 +20,7 @@ const {
   updatePassword,
   restrictTo,
 } = require('../controllers/authController');
+const { getOne } = require('../controllers/handlerFactory');
 
 router.param('id', (req, res, next, val) => {
   console.log('param id 1', val);
@@ -41,6 +43,7 @@ router.route('/updateMe').patch(protect, restrictTo('admin'), userUpdateMe);
 //Delete Me User
 router.route('/deleteMe').patch(protect, deleteMe); //only update active:false
 
+router.route('/me').get(protect, getMe, getUser);
 router.route('/').get(getAllUsers).post(addUser);
 router
   .route('/:id')
