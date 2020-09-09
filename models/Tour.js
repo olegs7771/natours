@@ -122,6 +122,9 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+//Set Indexes
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
 
 //Document Middleware
 //Executed on .save() or .create() but not on insertMany()!

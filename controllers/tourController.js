@@ -31,7 +31,7 @@ const getToursStats = catchAsync(async (req, res, next) => {
     {
       $match: {
         ratingsAverage: {
-          $gte: 4.5,
+          $gte: 2.5,
         },
       },
     },
@@ -55,6 +55,7 @@ const getToursStats = catchAsync(async (req, res, next) => {
   ]);
   res.json({
     status: 'Success',
+    results: stats.length,
     data: stats,
   });
 });

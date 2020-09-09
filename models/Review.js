@@ -47,6 +47,28 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
+//Static function
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: 'tour',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+  console.log('stats', stats);
+};
+reviewSchema.post('save', function () {
+  //this.constructor-->points to Model
+  //this -->points to document to be saved
+  this.constructor.calcAverageRatings(this.tour);
+});
+
 //Allow nested routes
 //  if (!req.body.tour) req.body.tour = req.params.tourId;
 //  if (!req.body.user) req.body.user = req.user.id;

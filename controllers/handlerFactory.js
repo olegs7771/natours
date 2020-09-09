@@ -76,6 +76,7 @@ const getAll = (Model) =>
       .paginate();
 
     const docs = await features.query;
+    // const docs = await features.query.explain();
 
     //Send Response
     res.status(200).json({
