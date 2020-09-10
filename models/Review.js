@@ -2,7 +2,7 @@
 //pre uses next()
 //post NO next()!!
 const mongoose = require('mongoose');
-const Tour = require('../models/Tour');
+const Tour = require('./Tour');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -52,9 +52,10 @@ reviewSchema.pre(/^find/, function (next) {
 
 //Static function for calculating in Tour
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  console.log('this in func', this);
   const stats = await this.aggregate([
     {
-      $match: { tour: tourId }, //finds tour by id
+      $match: { tour: tourId }, //finds all reviews of one tour
     },
     {
       $group: {
