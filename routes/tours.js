@@ -10,6 +10,7 @@ const {
   aliasTopTours,
   getToursStats,
   getMonthlyPlan,
+  getToursWithin,
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('../controllers/authController');
 //Merge Rauters
@@ -28,6 +29,13 @@ router.route('/stats').get(getToursStats);
 router
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide'), getMonthlyPlan);
+
+//find tour location near me
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
+//old way==> /tours-distance?distance=233&center/=-40,45&unit=mi
+//our way==>/tours-distance/233/center/34.105202, -118.097279/unit/mi
 
 router
   .route('/')

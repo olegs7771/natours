@@ -35,6 +35,10 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+//Prevent from Same user gives muliple reviews for the same tour
+// Create combine index for tour and user
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 //Middleware
 //Get Reviews for particular Tour
 reviewSchema.pre(/^find/, function (next) {

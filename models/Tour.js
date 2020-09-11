@@ -43,6 +43,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.7,
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
+      set: (val) => Math.round(val * 10) / 10, //set function runs every time new value sets in
     },
     ratingsQuantity: {
       type: Number,
@@ -125,6 +126,7 @@ const tourSchema = new mongoose.Schema(
 //Set Indexes
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 //Document Middleware
 //Executed on .save() or .create() but not on insertMany()!
@@ -163,8 +165,8 @@ tourSchema.pre('save', function (next) {
 //Define rejex /^find/ to triger all find comands
 tourSchema.pre(/^find/, function (next) {
   //this.find({ secretTour: { $ne: false } }); //find only secret tours
-
   this.start = Date.now();
+  // this.select('name');
   next();
 });
 
@@ -178,8 +180,8 @@ tourSchema.pre(/^find/, function (next) {
 
 //RUNS after query executed
 //this points to doc found in DB
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds`);
+tourSchema.post(/^find/, async function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start}  milliseconds`);
   next();
 });
 
