@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -11,6 +12,14 @@ const reviews = require('./routes/reviews');
 const errorControl = require('./controllers/errorController');
 
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+//Serving static files
+// app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
+
 //Helmet For security HTTP  Headers
 app.use(helmet());
 
@@ -48,10 +57,11 @@ app.use(
     ],
   })
 );
-//Serving static files
-app.use(express.static(`${__dirname}/public`));
 
 //WRITE OUR OWN MIDDLEWARE
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
 
 app.use('/api/v1/tours', tours);
 app.use('/api/v1/users', users);
