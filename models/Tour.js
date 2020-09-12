@@ -187,12 +187,13 @@ tourSchema.post(/^find/, async function (docs, next) {
 
 //Aggregation Middleware
 tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({
+  this.pipeline().push({
     $match: {
       secretTour: { $ne: true },
+      // secretTour: false,
     },
   });
-  console.log('this agg', this.pipeline());
+  console.log('this aggregation pipeline', this.pipeline());
   next();
 });
 

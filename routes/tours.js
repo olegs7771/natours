@@ -11,6 +11,7 @@ const {
   getToursStats,
   getMonthlyPlan,
   getToursWithin,
+  getDistances,
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('../controllers/authController');
 //Merge Rauters
@@ -37,6 +38,8 @@ router
 //old way==> /tours-distance?distance=233&center/=-40,45&unit=mi
 //our way==>/tours-distance/233/center/34.105202, -118.097279/unit/mi
 
+//Find distances to all tours
+router.route('/distances/:latlng/unit/:unit').get(getDistances);
 router
   .route('/')
   .get(getAllTours)

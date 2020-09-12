@@ -136,6 +136,48 @@ const getToursWithin = catchAsync(async (req, res, next) => {
     },
   });
 });
+//Create distance field in the Tour
+const getDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  console.log('unit', unit);
+  console.log('latlng', latlng);
+  const [lat, lng] = latlng.split(',');
+  //Convert to Km or Mi
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
+  if (!lat || !lng) {
+    return next(
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        400
+      )
+    );
+  }
+  const distances = await Tour.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng * 1, lat * 1],
+        },
+        distanceField: 'distance', //Creates distance field
+        distanceMultiplier: multiplier, //Convert from m to km
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+  res.json({
+    status: 'success',
+    data: {
+      distances,
+    },
+  });
+});
 
 module.exports = {
   getAllTours,
@@ -147,4 +189,5 @@ module.exports = {
   getToursStats,
   getMonthlyPlan,
   getToursWithin,
+  getDistances,
 };
