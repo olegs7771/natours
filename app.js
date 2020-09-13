@@ -59,8 +59,12 @@ app.use(
 );
 
 //WRITE OUR OWN MIDDLEWARE
+//Serve templates
 app.get('/', (req, res) => {
-  res.status(200).render('base');
+  res.status(200).render('base', {
+    tour: 'Tour Forest Hiker',
+    user: 'Oleg',
+  });
 });
 
 app.use('/api/v1/tours', tours);
