@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const tours = require('./routes/tours');
 const users = require('./routes/users');
 const reviews = require('./routes/reviews');
+const viewsRouter = require('./routes/viewsRouter');
 const errorControl = require('./controllers/errorController');
 
 const app = express();
@@ -59,24 +60,9 @@ app.use(
 );
 
 //WRITE OUR OWN MIDDLEWARE
-//Serve templates
-app.get('/', (req, res) => {
-  res.status(200).render('base', {
-    tour: 'Tour Forest Hiker',
-    user: 'Oleg',
-  });
-});
-app.get('/overview', (req, res) => {
-  res.status(200).render('overview', {
-    title: 'All Tours',
-  });
-});
-app.get('/tour', (req, res) => {
-  res.status(200).render('tour', {
-    title: 'The Forest Hiker Tour',
-  });
-});
+//Serve templates routes
 
+app.use('/', viewsRouter);
 app.use('/api/v1/tours', tours);
 app.use('/api/v1/users', users);
 app.use('/api/v1/reviews', reviews);
