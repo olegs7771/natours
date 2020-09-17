@@ -113,6 +113,7 @@ const tourSchema = new mongoose.Schema(
         ref: 'User',
       },
     ],
+
     secretTour: {
       type: Boolean,
       default: false,
@@ -173,7 +174,7 @@ tourSchema.pre(/^find/, function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
-    select: 'name',
+    select: 'name photo role',
   });
   next();
 });
@@ -201,7 +202,8 @@ tourSchema.pre('aggregate', function (next) {
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
-//Virtualy populate tour with reviews
+//Virtualy populate tour with reviews on every query find
+
 tourSchema.virtual('reviews', {
   ref: 'Review', //Connects to Review schema
   foreignField: 'tour',

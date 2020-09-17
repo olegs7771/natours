@@ -1,6 +1,6 @@
 const Tour = require('../models/Tour');
-const User = require('../models/User');
-const Review = require('../models/Review');
+// const User = require('../models/User');
+// const Review = require('../models/Review');
 const catchAsync = require('../utils/catchAsync');
 
 const getOverview = catchAsync(async (req, res, next) => {
@@ -16,18 +16,19 @@ const getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-const getTour = catchAsync(async (req, res) => {
+const getTour = catchAsync(async (req, res, next) => {
   // 1)get the data for the requested tour(including reviews and guides)
-  // const tour = await (await Tour.findOne({ slug: req.params.slug })).populate({
-  //   path: 'reviews',
-  //   fields: 'review ratings user',
-  // });
-  // console.log('tour', tour);
+  const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+    path: 'reviews',
+    field: 'review',
+  });
+  console.log('tour', tour);
+
   // 2) Build template
   // 3) Render template using data from 1
   res.status(200).render('tour', {
     title: '| The Forest Hiker Tour',
-    // tour,
+    tour,
   });
 });
 
