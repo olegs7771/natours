@@ -25,6 +25,7 @@ router.param('id', (req, res, next, val) => {
   console.log('param id 1', val);
   next();
 });
+
 router.param('id', (req, res, next, val) => {
   console.log('param id 2', val);
   next();
