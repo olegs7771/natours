@@ -8,7 +8,8 @@ mapboxgl.accessToken =
 var map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/olegs777/ckf9c8omb0if119rwgysy93wg',
-  interactive: false,
+  // interactive: false,
+  scrollZoom: false,
   // center: [-73.5804, 45.53483],
   // pitch: 0,
   // bearing: -60,
@@ -27,6 +28,14 @@ locations.map((loc) => {
   })
     .setLngLat(loc.coordinates)
     .addTo(map);
+  //Add Popup
+  new mapboxgl.Popup({
+    offset: 40,
+  })
+    .setLngLat(loc.coordinates)
+    .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
+    .addTo(map);
+
   //Extend map bounds to include current location
   bounds.extend(loc.coordinates);
 });
