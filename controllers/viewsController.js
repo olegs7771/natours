@@ -22,7 +22,6 @@ const getTour = catchAsync(async (req, res, next) => {
     path: 'reviews',
     field: 'review',
   });
-  console.log('tour', tour);
 
   // 2) Build template
   // 3) Render template using data from 1

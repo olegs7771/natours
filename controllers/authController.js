@@ -27,7 +27,7 @@ const createSendToken = (user, StatusCode, res) => {
   user.password = undefined;
   console.log('test');
   res.status(StatusCode).json({
-    status: 'Success',
+    status: 'success',
     token,
     data: user,
   });
@@ -64,6 +64,39 @@ const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+//Check if user logged in and renders views accordingly.
+// No Errors
+const isLoggedIn = catchAsync(async (req, res, next) => {
+  //1) Get Token and check if it's valid
+
+  if (req.cookies.jwt) {
+    console.log('req.cookies.jwt', req.cookies.jwt);
+    // //2) Varification Token
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET
+    );
+
+    //   // //3) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+
+    if (!currentUser) {
+      return next();
+    }
+
+    //   // //4) Check if user changed password after token was issued
+    if (currentUser.passwordChanged(decoded.iat)) {
+      //if true then passwordChangedAt > decoded.iat cut pipeline
+      return next();
+    }
+
+    // //There is Logged User //res.locals.user==> passed to all pug templates
+    res.locals.user = currentUser;
+    return next();
+  }
+
+  next();
+});
 //Protect Routes Middleware
 const protect = catchAsync(async (req, res, next) => {
   console.log('req.params in protect', req.params);
@@ -74,6 +107,8 @@ const protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
   if (!token) {
     return next(
@@ -226,4 +261,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   updatePassword,
+  isLoggedIn,
 };
