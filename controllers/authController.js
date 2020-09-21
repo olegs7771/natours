@@ -17,7 +17,7 @@ const createSendToken = (user, StatusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXP * 24 * 60 * 60 * 1000
     ),
-    httpOnly: true, //cant manipulate coockie in the browser
+    httpOnly: true,
     // secure: true,
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
@@ -64,51 +64,39 @@ const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-const logout = (req, res) => {
-  res.cookie('jwt', 'logout', {
-    expires: new Date(Date.now() + 10 * 1000),
-    httpOnly: true,
-  });
-  res.status(200).json({ status: 'success' });
-};
-
 //Check if user logged in and renders views accordingly.
 // No Errors
-const isLoggedIn = async (req, res, next) => {
+const isLoggedIn = catchAsync(async (req, res, next) => {
   //1) Get Token and check if it's valid
 
   if (req.cookies.jwt) {
-    try {
-      console.log('req.cookies.jwt', req.cookies.jwt);
-      // //2) Varification Token
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        process.env.JWT_SECRET
-      );
+    console.log('req.cookies.jwt', req.cookies.jwt);
+    // //2) Varification Token
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET
+    );
 
-      //   // //3) Check if user still exists
-      const currentUser = await User.findById(decoded.id);
+    //   // //3) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
 
-      if (!currentUser) {
-        return next();
-      }
-
-      //   // //4) Check if user changed password after token was issued
-      if (currentUser.passwordChanged(decoded.iat)) {
-        //if true then passwordChangedAt > decoded.iat cut pipeline
-        return next();
-      }
-
-      // //There is Logged User //res.locals.user==> passed to all pug templates
-      res.locals.user = currentUser;
-      return next();
-    } catch (err) {
+    if (!currentUser) {
       return next();
     }
+
+    //   // //4) Check if user changed password after token was issued
+    if (currentUser.passwordChanged(decoded.iat)) {
+      //if true then passwordChangedAt > decoded.iat cut pipeline
+      return next();
+    }
+
+    // //There is Logged User //res.locals.user==> passed to all pug templates
+    res.locals.user = currentUser;
+    return next();
   }
 
   next();
-};
+});
 //Protect Routes Middleware
 const protect = catchAsync(async (req, res, next) => {
   console.log('req.params in protect', req.params);
@@ -268,7 +256,6 @@ const updatePassword = catchAsync(async (req, res, next) => {
 module.exports = {
   signup,
   login,
-  logout,
   protect,
   restrictTo,
   forgotPassword,

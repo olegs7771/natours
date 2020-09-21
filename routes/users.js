@@ -15,7 +15,6 @@ const {
   protect,
   signup,
   login,
-  logout,
   forgotPassword,
   resetPassword,
   updatePassword,
@@ -41,8 +40,6 @@ router.route('/resetPassword/:token').patch(resetPassword);
 //All middleware work in siquence . This router is mini app, so
 // we can put:
 router.use(protect);
-
-router.route('/logout').get(logout);
 //Than all routers from here will be with protect
 // router.route('/updatePassword').patch(protect, updatePassword);
 
