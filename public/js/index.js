@@ -1,10 +1,13 @@
 /*eslint-disable*/
 import '@babel/polyfill';
-import { login } from './login';
+import { login, logout } from './login';
 import { displayMap } from './mapbox';
 
 // DOM Elements
 const mapBox = document.getElementById('map');
+const loginForm = document.querySelector('.form');
+const logoutButton = document.querySelector('.nav__el--logout');
+
 //Delegation
 if (mapBox) {
   const locations = JSON.parse(
@@ -14,7 +17,7 @@ if (mapBox) {
   displayMap(locations);
 }
 
-if (document.querySelector('.form')) {
+if (loginForm) {
   document.querySelector('.form').addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
@@ -22,3 +25,9 @@ if (document.querySelector('.form')) {
     login(email, password);
   });
 }
+
+if (logoutButton)
+  logoutButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
