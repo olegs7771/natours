@@ -64,6 +64,17 @@ const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+//Logout
+const logout = catchAsync(async (req, res, next) => {
+  res.cookie('jwt', 'logout', {
+    expires: new Date(Date.now + 10 * 60 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({
+    status: 'success',
+  });
+});
+
 //Check if user logged in and renders views accordingly.
 // No Errors
 const isLoggedIn = catchAsync(async (req, res, next) => {
@@ -256,6 +267,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
 module.exports = {
   signup,
   login,
+  logout,
   protect,
   restrictTo,
   forgotPassword,
