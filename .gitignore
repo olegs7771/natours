@@ -3,3 +3,4 @@ config.env
 .gitignore
 bundle.js
 bundle.js.map
+.cache
