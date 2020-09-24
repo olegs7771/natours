@@ -15,6 +15,7 @@ const {
   protect,
   signup,
   login,
+  logout,
   forgotPassword,
   resetPassword,
   updatePassword,
@@ -33,6 +34,7 @@ router.param('id', (req, res, next, val) => {
 // router.param('id', checkID);
 router.route('/signup').post(signup);
 router.route('/login').post(login);
+router.route('/logout').get(logout);
 //Reset forgotten password
 router.route('/forgotPassword').post(forgotPassword);
 router.route('/resetPassword/:token').patch(resetPassword);
@@ -43,6 +45,7 @@ router.use(protect);
 //Than all routers from here will be with protect
 // router.route('/updatePassword').patch(protect, updatePassword);
 
+//
 //Update Password
 router.route('/updatePassword').patch(updatePassword);
 //Update Me User Data

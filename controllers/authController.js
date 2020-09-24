@@ -65,15 +65,13 @@ const login = catchAsync(async (req, res, next) => {
 });
 
 //Logout
-const logout = catchAsync(async (req, res, next) => {
-  res.cookie('jwt', 'logout', {
-    expires: new Date(Date.now + 10 * 60 * 1000),
+const logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
-  res.status(200).json({
-    status: 'success',
-  });
-});
+  res.status(200).json({ status: 'success' });
+};
 
 //Check if user logged in and renders views accordingly.
 // No Errors

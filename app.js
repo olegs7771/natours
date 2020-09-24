@@ -40,10 +40,10 @@ app.use('/api', limiter);
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  console.log('req.cookies', req.cookies);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('req.cookies', req.cookies);
+//   next();
+// });
 //Data  sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
