@@ -23,7 +23,7 @@
     "eslint-plugin-react": "^7.20.5",
     "ndb": "^1.1.5",
     "nodemon": "^2.0.4",
-    "parcel-bundler": "^1.12.4",
+   
     "prettier": "^2.0.5"
   },
   "dependencies": {
