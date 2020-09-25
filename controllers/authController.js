@@ -66,7 +66,7 @@ const login = catchAsync(async (req, res, next) => {
 
 //Logout
 const logout = (req, res) => {
-  res.cookie('jwt', 'loggedout', {
+  res.cookie('jwt', '', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
