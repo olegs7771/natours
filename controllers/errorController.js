@@ -44,21 +44,28 @@ const sendErrorDev = (err, req, res) => {
   }
 };
 //PROD ERROR
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (err, req, res) => {
   //Operational,trusted error:send message to client
   if (err.isOperational) {
-    res.status(err.statusCode).json({
+    return res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
     });
     //Programming or other error: dodn't leak error details
-  } else {
+  }
+  //API ERROR =>render
+  if (req.originalUrl.startsWith('/api')) {
     console.log('Error 💥', err);
-    res.status(500).json({
+    return res.status(500).json({
       status: 'Error',
       message: 'Something went wrong..',
     });
   }
+  //VIEW ERROR
+  res.render('error', {
+    title: 'Error',
+    msg: 'Something went wrong..',
+  });
 };
 
 module.exports = (err, req, res, next) => {
