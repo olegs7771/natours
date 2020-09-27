@@ -9,6 +9,5 @@ let markup;
 const showAlert = (type, msg) => {
   hideAlert();
   markup = `<div class='alert alert--${type}'>${msg}</div>`;
+  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
 };
-
-document.querySelector('body').insertAdjacentHTML('afterbegin', markup);

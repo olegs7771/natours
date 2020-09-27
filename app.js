@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+
 const tours = require('./routes/tours');
 const users = require('./routes/users');
 const reviews = require('./routes/reviews');
@@ -38,6 +39,9 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 //Body Parser with limitted body
 app.use(express.json({ limit: '10kb' }));
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 app.use(cookieParser());
 
 // app.use((req, res, next) => {

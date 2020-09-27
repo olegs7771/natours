@@ -25,7 +25,7 @@ const createSendToken = (user, StatusCode, res) => {
   res.cookie('jwt', token, cookieOptions);
   //Hide password in response data
   user.password = undefined;
-  console.log('test');
+
   res.status(StatusCode).json({
     status: 'success',
     token,
@@ -79,7 +79,7 @@ const isLoggedIn = catchAsync(async (req, res, next) => {
   //1) Get Token and check if it's valid
 
   if (req.cookies.jwt) {
-    console.log('req.cookies.jwt', req.cookies.jwt);
+    // console.log('req.cookies.jwt', req.cookies.jwt);
     // //2) Varification Token
     const decoded = await promisify(jwt.verify)(
       req.cookies.jwt,
@@ -153,6 +153,7 @@ const protect = catchAsync(async (req, res, next) => {
   console.log('route protection grants pass');
   //store found user in pipiline in req object
   req.user = user;
+  res.locals.user = user;
   next();
 });
 

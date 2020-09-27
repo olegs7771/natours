@@ -108,12 +108,12 @@ const getMonthlyPlan = catchAsync(async (req, res, next) => {
 //our way==>/tours-distance/233/center/34.105202, -118.097279/unit/mi
 const getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
-  console.log('latlng', latlng);
+  // console.log('latlng', latlng);
 
   const [lat, lng] = latlng.split(',');
   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
-  console.log('lat', lat);
-  console.log('lng', lng);
+  // console.log('lat', lat);
+  // console.log('lng', lng);
   if (!lat || !lng) {
     return next(
       new AppError(
@@ -139,8 +139,8 @@ const getToursWithin = catchAsync(async (req, res, next) => {
 //Create distance field in the Tour
 const getDistances = catchAsync(async (req, res, next) => {
   const { latlng, unit } = req.params;
-  console.log('unit', unit);
-  console.log('latlng', latlng);
+  // console.log('unit', unit);
+  // console.log('latlng', latlng);
   const [lat, lng] = latlng.split(',');
   //Convert to Km or Mi
   const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
