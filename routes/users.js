@@ -49,7 +49,7 @@ router.use(protect);
 //Update Password
 router.route('/updatePassword').patch(updatePassword);
 //Update Me User Data
-router.route('/updateMe').patch(restrictTo('admin'), userUpdateMe);
+router.route('/updateMe').patch(protect, userUpdateMe);
 //Delete Me User
 router.route('/deleteMe').patch(deleteMe); //only update active:false
 

@@ -4,6 +4,8 @@ const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 
 const filterObj = (obj, ...allowedFields) => {
+  console.log('obj', obj);
+  console.log('allowedFields', allowedFields);
   const newObj = {};
   Object.keys(obj).map((elem) => {
     if (allowedFields.includes(elem)) newObj[elem] = obj[elem];
@@ -20,6 +22,7 @@ const getMe = (req, res, next) => {
 
 //User Updates himsef
 const userUpdateMe = catchAsync(async (req, res, next) => {
+  console.log('req.body in update', req.body);
   //If User tries to update password ,thraw error
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError('You cant update password here', 401));
@@ -27,14 +30,14 @@ const userUpdateMe = catchAsync(async (req, res, next) => {
   //Filter Update Object. Prevent from updating :role,etc...
   const filteredBody = filterObj(req.body, 'name', 'email');
   console.log('filteredBody', filteredBody);
-  const filterUser = await User.findByIdAndUpdate(req.user._id, filteredBody, {
+  const user = await User.findByIdAndUpdate(req.user._id, filteredBody, {
     new: true,
     runValidators: true,
   });
 
   res.json({
     status: 'success',
-    filterUser,
+    user,
   });
 });
 

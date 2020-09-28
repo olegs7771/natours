@@ -23,5 +23,5 @@ router.get('/tour/:slug', isLoggedIn, getTour);
 router.get('/login', getLoginForm);
 router.get('/me', protect, getAccount);
 
-router.post('/submit-user-data', protect, updateUserData);
+router.patch('/submit-user-data', protect, updateUserData);
 module.exports = router;
