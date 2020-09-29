@@ -23,6 +23,7 @@ const getMe = (req, res, next) => {
 //User Updates himsef
 const userUpdateMe = catchAsync(async (req, res, next) => {
   console.log('req.body in update', req.body);
+  console.log('req.file', req.file);
   //If User tries to update password ,thraw error
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError('You cant update password here', 401));
