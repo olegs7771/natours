@@ -1,7 +1,61 @@
+const multer = require('multer');
+const sharp = require('sharp');
+const sizeOf = require('image-size');
 const AppError = require('../utils/appError');
 const User = require('../models/User');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
+
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     //Create unique file name
+//     const ext = file.mimetype.split('/')[1]; //'jpeg'
+//     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//   },
+// });
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  //Test if upoaded file is image
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image!', 400), false);
+  }
+};
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+const uploadUserPhoto = upload.single('photo');
+const resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next();
+  const dimensions = sizeOf(req.file.buffer);
+  console.log('dimensions', dimensions);
+  if (dimensions.orientation === 6) {
+    //rotate clockwise 90deg
+    req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+    sharp(req.file.buffer)
+      .resize(500, 500, {
+        position: 'top',
+      })
+      .rotate(90)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/users/${req.file.filename}`);
+  } else {
+    req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+    sharp(req.file.buffer)
+      .resize(500, 500)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/users/${req.file.filename}`);
+  }
+  next();
+};
 
 const filterObj = (obj, ...allowedFields) => {
   console.log('obj', obj);
@@ -30,6 +84,7 @@ const userUpdateMe = catchAsync(async (req, res, next) => {
   }
   //Filter Update Object. Prevent from updating :role,etc...
   const filteredBody = filterObj(req.body, 'name', 'email');
+  if (req.file) filteredBody.photo = req.file.filename;
   console.log('filteredBody', filteredBody);
   const user = await User.findByIdAndUpdate(req.user._id, filteredBody, {
     new: true,
@@ -77,4 +132,6 @@ module.exports = {
   userUpdateMe,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 };
