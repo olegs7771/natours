@@ -108,7 +108,7 @@ const isLoggedIn = catchAsync(async (req, res, next) => {
 });
 //Protect Routes Middleware
 const protect = catchAsync(async (req, res, next) => {
-  console.log('req.params in protect', req.params);
+  // console.log('req.params in protect', req.params);
   let token;
   //1) Get Token and check if it's valid
   if (
@@ -134,7 +134,7 @@ const protect = catchAsync(async (req, res, next) => {
 
   //3) Check if user still exists
   const user = await User.findById(decoded.id);
-  console.log('user in protect', user);
+  // console.log('user in protect', user);
 
   if (!user) {
     return next(new AppError('The user of this token no longer exists', 401));
@@ -160,7 +160,7 @@ const protect = catchAsync(async (req, res, next) => {
 //Restrict Users from delete tours only admin or lead-guide permmited
 const restrictTo = (...roles) => {
   return (req, res, next) => {
-    console.log('req.user', req.user);
+    // console.log('req.user', req.user);
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError("Your role don't have permission for this action", 403)

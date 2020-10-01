@@ -1,6 +1,7 @@
 // const fs = require('fs');
 const multer = require('multer');
 const sharp = require('sharp');
+const sizeOf = require('image-size');
 
 const Tour = require('../models/Tour');
 const catchAsync = require('../utils/catchAsync');
@@ -31,6 +32,32 @@ const uploadTourImages = upload.fields([
     maxCount: 3,
   },
 ]);
+const resizeToursPhoto = (req, res, next) => {
+  console.log('req.files', req.files.imageCover[0]);
+  if (!req.files) return next();
+  const dimensions = sizeOf(req.files.imageCover[0].buffer);
+  console.log('dimensions', dimensions);
+  // if (dimensions.orientation === 6) {
+  //   //rotate clockwise 90deg
+  //   req.file.filename = `tour-${req.user.id}-${Date.now()}.jpeg`;
+  //   sharp(req.file.buffer)
+  //     .resize(500, 500, {
+  //       position: 'top',
+  //     })
+  //     .rotate(90)
+  //     .toFormat('jpeg')
+  //     .jpeg({ quality: 90 })
+  //     .toFile(`public/img/tours/${req.file.filename}`);
+  // } else {
+  //   req.file.filename = `tour-${req.user.id}-${Date.now()}.jpeg`;
+  //   sharp(req.file.buffer)
+  //     .resize(500, 500)
+  //     .toFormat('jpeg')
+  //     .jpeg({ quality: 90 })
+  //     .toFile(`public/img/tours/${req.file.filename}`);
+  // }
+  next();
+};
 
 // Get Tours Sync!
 // const toursJson = JSON.parse(
@@ -219,4 +246,6 @@ module.exports = {
   getMonthlyPlan,
   getToursWithin,
   getDistances,
+  uploadTourImages,
+  resizeToursPhoto,
 };
