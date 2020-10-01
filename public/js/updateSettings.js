@@ -26,10 +26,14 @@ const formPasswordUpdateBtn = document.querySelector('.btn--save-password');
 if (formUpdateData) {
   formDataUpdateBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const data = { name, email };
-    updateSettings(data, 'data');
+    const fd = new FormData();
+    fd.append('name', document.getElementById('name').value);
+    fd.append('email', document.getElementById('email').value);
+    fd.append('photo', document.getElementById('photo').files[0]);
+    // const name = document.getElementById('name').value;
+    // const email = document.getElementById('email').value;
+
+    updateSettings(fd, 'data');
   });
 }
 if (formUpdatePassword) {
