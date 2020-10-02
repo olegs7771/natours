@@ -32,11 +32,31 @@ const uploadTourImages = upload.fields([
     maxCount: 3,
   },
 ]);
-const resizeToursPhoto = (req, res, next) => {
-  console.log('req.files', req.files.imageCover[0]);
-  if (!req.files) return next();
-  const dimensions = sizeOf(req.files.imageCover[0].buffer);
-  console.log('dimensions', dimensions);
+const resizeToursPhoto = catchAsync(async (req, res, next) => {
+  console.log('req.files', req.files);
+  if (!req.files.imageCover || !req.files.images) return next();
+  // 1) Cover image
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`); //req.body we use in factory
+  //2) Images
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`); //req.body we use in
+      req.body.images.push(filename);
+    })
+  );
+  // const dimensions = sizeOf(req.files.imageCover[0].buffer);
+  // console.log('dimensions', dimensions);
   // if (dimensions.orientation === 6) {
   //   //rotate clockwise 90deg
   //   req.file.filename = `tour-${req.user.id}-${Date.now()}.jpeg`;
@@ -57,7 +77,7 @@ const resizeToursPhoto = (req, res, next) => {
   //     .toFile(`public/img/tours/${req.file.filename}`);
   // }
   next();
-};
+});
 
 // Get Tours Sync!
 // const toursJson = JSON.parse(

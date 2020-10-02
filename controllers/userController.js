@@ -31,14 +31,14 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 const uploadUserPhoto = upload.single('photo');
-const resizeUserPhoto = (req, res, next) => {
+const resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
   const dimensions = sizeOf(req.file.buffer);
   console.log('dimensions', dimensions);
   if (dimensions.orientation === 6) {
     //rotate clockwise 90deg
     req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-    sharp(req.file.buffer)
+    await sharp(req.file.buffer)
       .resize(500, 500, {
         position: 'top',
       })
@@ -48,14 +48,14 @@ const resizeUserPhoto = (req, res, next) => {
       .toFile(`public/img/users/${req.file.filename}`);
   } else {
     req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-    sharp(req.file.buffer)
+    await sharp(req.file.buffer)
       .resize(500, 500)
       .toFormat('jpeg')
       .jpeg({ quality: 90 })
       .toFile(`public/img/users/${req.file.filename}`);
   }
   next();
-};
+});
 
 const filterObj = (obj, ...allowedFields) => {
   console.log('obj', obj);
