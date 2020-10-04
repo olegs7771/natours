@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
+// const dotenv = require('dotenv');
+require('dotenv').config();
 //Handle Uncaught Exeptions (errors,bugs in asynchrones code)
 process.on('uncaughtException', (err) => {
   console.log(err.name, ':', err.message);
@@ -9,7 +9,7 @@ process.on('uncaughtException', (err) => {
 });
 const app = require('./app');
 
-dotenv.config({ path: './config.env' });
+// dotenv.config({ path: './config.env' });
 mongoose
   .connect(process.env.DATABASE, {
     useUnifiedTopology: true,
