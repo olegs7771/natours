@@ -12,7 +12,14 @@ module.exports = class Email {
   createTransportMethod() {
     if (process.env.NODE_ENV === 'production') {
       //Sendgrid
-      return 1;
+      return nodemailer.createTransport({
+        //Predefined Service
+        service: 'Sendgrid',
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_APIKEY,
+        },
+      });
     }
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -38,8 +45,8 @@ module.exports = class Email {
       to: this.to,
       subject,
       html,
-      // text: htmlToText.fromString(html),
-      text: 'some text',
+      text: htmlToText.fromString(html),
+      // text: 'some text',
     };
     // 3) Create a transport and sand email
     this.createTransportMethod().sendMail(mailOptions);

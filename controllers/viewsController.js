@@ -15,8 +15,9 @@ const getOverview = catchAsync(async (req, res, next) => {
     tours,
   });
 });
-
+console.log('in views env', process.env.PASSWORD);
 const getTour = catchAsync(async (req, res, next) => {
+  console.log('in views env', process.env.PASSWORD);
   // 1)get the data for the requested tour(including reviews and guides)
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',

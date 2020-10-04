@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser');
 const tours = require('./routes/tours');
 const users = require('./routes/users');
 const reviews = require('./routes/reviews');
+const bookings = require('./routes/bookings');
 const viewsRouter = require('./routes/viewsRouter');
 const errorControl = require('./controllers/errorController');
 
@@ -77,6 +78,7 @@ app.use('/', viewsRouter);
 app.use('/api/v1/tours', tours);
 app.use('/api/v1/users', users);
 app.use('/api/v1/reviews', reviews);
+app.use('/api/v1/bookings', bookings);
 
 // Not existing routes
 app.all('*', (req, res, next) => {
