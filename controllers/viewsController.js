@@ -43,6 +43,9 @@ const getAccount = (req, res, next) => {
     title: 'Your Account',
   });
 };
+
+const getMyTours = (req, res, next) => {};
+
 const updateUserData = catchAsync(async (req, res, next) => {
   console.log('req.body', req.body);
   const user = await User.findByIdAndUpdate(
@@ -65,4 +68,5 @@ module.exports = {
   getLoginForm,
   getAccount,
   updateUserData,
+  getMyTours,
 };
