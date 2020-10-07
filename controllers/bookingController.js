@@ -46,17 +46,25 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
 
 const createBookingCheckout = catchAsync(async (req, res, next) => {
   // Temporary and Unsecure. Everyone can make bookings without paying
-  console.log('booking created');
   const { tour, user, price } = req.query;
-  console.log('req.query', req.query);
-  console.log('tour', tour);
-  console.log('user', user);
-  console.log('price', price);
   if (!tour && !user && !price) return next();
   await Booking.create({ tour, user, price });
-
   res.redirect(req.originalUrl.split('?')[0]);
+  //insert this handle into the stack in viewRouter '/'
 });
-//insert this handle into the stack in viewRouter '/'
 
-module.exports = { getCheckOutSession, createBookingCheckout };
+const createBooking = factory.createOne(Booking);
+const getBooking = factory.getOne(Booking);
+const getAllBookings = factory.getAll(Booking);
+const updateBooking = factory.updateOne(Booking);
+const deleteBooking = factory.deleteOne(Booking);
+
+module.exports = {
+  getCheckOutSession,
+  createBookingCheckout,
+  createBooking,
+  getBooking,
+  getAllBookings,
+  updateBooking,
+  deleteBooking,
+};
