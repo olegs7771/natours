@@ -1,6 +1,6 @@
 const path = require('path');
 const express = require('express');
-
+const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -71,6 +71,7 @@ app.use(
   })
 );
 
+app.use(compression());
 //WRITE OUR OWN MIDDLEWARE
 //Serve templates routes
 

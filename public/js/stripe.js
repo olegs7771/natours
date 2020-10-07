@@ -12,7 +12,7 @@ const bookTour = async (tourId) => {
     const session = await axios.get(
       `http://127.0.0.1:8000/api/v1/bookings/checkout-session/${tourId}`
     );
-    console.log('session', session);
+    // console.log('session', session);
     // 2) Create checkout form + charge credit card
     await stripe.redirectToCheckout({ sessionId: session.data.session.id });
   } catch (err) {
@@ -21,6 +21,6 @@ const bookTour = async (tourId) => {
 };
 
 bookBtn.addEventListener('click', (e) => {
-  console.log('e', e.target.dataset.tourId);
+  // console.log('e', e.target.dataset.tourId);
   bookTour(e.target.dataset.tourId);
 });

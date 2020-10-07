@@ -43,15 +43,15 @@ if (formUpdatePassword) {
     const newpassword = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
     const data = { password, newpassword, passwordConfirm };
-    console.log('data password', data);
+    // console.log('data password', data);
 
-    console.log('updating..');
+    // console.log('updating..');
     document.querySelector('.btn--save-password').textContent = 'Updating..';
     await updateSettings(data, 'password');
     document.querySelector('.btn--save-password').textContent = 'Save Password';
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
-    console.log('updated');
+    // console.log('updated');
   });
 }
