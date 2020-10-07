@@ -1,8 +1,84 @@
 // const fs = require('fs');
+const multer = require('multer');
+const sharp = require('sharp');
+const sizeOf = require('image-size');
+
 const Tour = require('../models/Tour');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
+
+const multerStorage = multer.memoryStorage(); //storing images in memory
+const multerFilter = (req, file, cb) => {
+  //Test if upoaded file is image
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('Not an image!', 400), false);
+  }
+};
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+const uploadTourImages = upload.fields([
+  {
+    name: 'imageCover',
+    maxCount: 1,
+  },
+  {
+    name: 'images',
+    maxCount: 3,
+  },
+]);
+const resizeToursPhoto = catchAsync(async (req, res, next) => {
+  console.log('req.files', req.files);
+  if (!req.files.imageCover || !req.files.images) return next();
+  // 1) Cover image
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`); //req.body we use in factory
+  //2) Images
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`); //req.body we use in
+      req.body.images.push(filename);
+    })
+  );
+  // const dimensions = sizeOf(req.files.imageCover[0].buffer);
+  // console.log('dimensions', dimensions);
+  // if (dimensions.orientation === 6) {
+  //   //rotate clockwise 90deg
+  //   req.file.filename = `tour-${req.user.id}-${Date.now()}.jpeg`;
+  //   sharp(req.file.buffer)
+  //     .resize(500, 500, {
+  //       position: 'top',
+  //     })
+  //     .rotate(90)
+  //     .toFormat('jpeg')
+  //     .jpeg({ quality: 90 })
+  //     .toFile(`public/img/tours/${req.file.filename}`);
+  // } else {
+  //   req.file.filename = `tour-${req.user.id}-${Date.now()}.jpeg`;
+  //   sharp(req.file.buffer)
+  //     .resize(500, 500)
+  //     .toFormat('jpeg')
+  //     .jpeg({ quality: 90 })
+  //     .toFile(`public/img/tours/${req.file.filename}`);
+  // }
+  next();
+});
+
 // Get Tours Sync!
 // const toursJson = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
@@ -108,12 +184,12 @@ const getMonthlyPlan = catchAsync(async (req, res, next) => {
 //our way==>/tours-distance/233/center/34.105202, -118.097279/unit/mi
 const getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
-  console.log('latlng', latlng);
+  // console.log('latlng', latlng);
 
   const [lat, lng] = latlng.split(',');
   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
-  console.log('lat', lat);
-  console.log('lng', lng);
+  // console.log('lat', lat);
+  // console.log('lng', lng);
   if (!lat || !lng) {
     return next(
       new AppError(
@@ -139,8 +215,8 @@ const getToursWithin = catchAsync(async (req, res, next) => {
 //Create distance field in the Tour
 const getDistances = catchAsync(async (req, res, next) => {
   const { latlng, unit } = req.params;
-  console.log('unit', unit);
-  console.log('latlng', latlng);
+  // console.log('unit', unit);
+  // console.log('latlng', latlng);
   const [lat, lng] = latlng.split(',');
   //Convert to Km or Mi
   const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
@@ -190,4 +266,6 @@ module.exports = {
   getMonthlyPlan,
   getToursWithin,
   getDistances,
+  uploadTourImages,
+  resizeToursPhoto,
 };
