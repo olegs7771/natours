@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -25,7 +25,7 @@ const createSendToken = (user, StatusCode, res) => {
   res.cookie('jwt', token, cookieOptions);
   //Hide password in response data
   user.password = undefined;
-  console.log('test');
+
   res.status(StatusCode).json({
     status: 'success',
     token,
@@ -34,7 +34,7 @@ const createSendToken = (user, StatusCode, res) => {
 };
 
 const signup = catchAsync(async (req, res, next) => {
-  console.log('req.body', req.body);
+  // console.log('req.body', req.body);
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -43,6 +43,9 @@ const signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
   });
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  // console.log('url', url);
+  await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
 });
@@ -79,7 +82,7 @@ const isLoggedIn = catchAsync(async (req, res, next) => {
   //1) Get Token and check if it's valid
 
   if (req.cookies.jwt) {
-    console.log('req.cookies.jwt', req.cookies.jwt);
+    // console.log('req.cookies.jwt', req.cookies.jwt);
     // //2) Varification Token
     const decoded = await promisify(jwt.verify)(
       req.cookies.jwt,
@@ -108,7 +111,7 @@ const isLoggedIn = catchAsync(async (req, res, next) => {
 });
 //Protect Routes Middleware
 const protect = catchAsync(async (req, res, next) => {
-  console.log('req.params in protect', req.params);
+  // console.log('req.params in protect', req.params);
   let token;
   //1) Get Token and check if it's valid
   if (
@@ -134,7 +137,7 @@ const protect = catchAsync(async (req, res, next) => {
 
   //3) Check if user still exists
   const user = await User.findById(decoded.id);
-  console.log('user in protect', user);
+  // console.log('user in protect', user);
 
   if (!user) {
     return next(new AppError('The user of this token no longer exists', 401));
@@ -150,16 +153,17 @@ const protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-  console.log('route protection grants pass');
+  // console.log('route protection grants pass');
   //store found user in pipiline in req object
   req.user = user;
+  res.locals.user = user;
   next();
 });
 
 //Restrict Users from delete tours only admin or lead-guide permmited
 const restrictTo = (...roles) => {
   return (req, res, next) => {
-    console.log('req.user', req.user);
+    // console.log('req.user', req.user);
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError("Your role don't have permission for this action", 403)
@@ -171,7 +175,7 @@ const restrictTo = (...roles) => {
 
 //Password Recovery
 const forgotPassword = catchAsync(async (req, res, next) => {
-  console.log('req.body', req.body);
+  // console.log('req.body', req.body);
   //1)Get User by email
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
@@ -183,24 +187,19 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
   //3)Send it to user's Email
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
 
-  const message = `Forgot your password? Submit A Patch request with your new password and passwordConfirm to:${resetURL}.\nIf you didn't forget your password ,please ignore this email.`;
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
-      message,
-    });
+    const resetURL = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/users/resetPassword/${resetToken}`;
+    await new Email(user, resetURL).sendPasswordReset();
     res.status(200).json({
       status: 'success',
-      message: 'Token sent to email!',
+      message: 'Token sent to email',
     });
   } catch (err) {
     //Error to sent email. Delete both passwordResetToken and passwordResetExpires from DB
-    console.log('err!!', err.name, err.message);
+    // console.log('err!!', err.name, err.message);
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
@@ -238,18 +237,18 @@ const resetPassword = catchAsync(async (req, res, next) => {
 
 //Update Password
 const updatePassword = catchAsync(async (req, res, next) => {
-  console.log('req.body', req.body);
-  console.log('req.user', req.user);
+  // console.log('req.body', req.body);
+  // console.log('req.user', req.user);
   //1)Get User from DB
   const user = await User.findById(req.user._id).select('+password');
-  console.log('user', user);
+  // console.log('user', user);
 
   //2)Check if POSTed password is correct
   const isPasswordValid = await user.correctPassword(
     req.body.password.toString(),
     user.password
   );
-  console.log('isPasswordValid', isPasswordValid);
+  // console.log('isPasswordValid', isPasswordValid);
   if (!isPasswordValid) {
     return next(new AppError('Invalid password. Please try again', 400));
   }
@@ -257,7 +256,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
   user.password = req.body.newpassword;
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
-  console.log('user saved', user);
+  // console.log('user saved', user);
   //4)Log User with new password, send token
   createSendToken(user, 200, res);
 });

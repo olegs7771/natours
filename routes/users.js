@@ -10,6 +10,8 @@ const {
   userUpdateMe,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controllers/userController');
 const {
   protect,
@@ -21,6 +23,7 @@ const {
   updatePassword,
   restrictTo,
 } = require('../controllers/authController');
+const { updateUserData } = require('../controllers/viewsController');
 
 router.param('id', (req, res, next, val) => {
   console.log('param id 1', val);
@@ -49,7 +52,10 @@ router.use(protect);
 //Update Password
 router.route('/updatePassword').patch(updatePassword);
 //Update Me User Data
-router.route('/updateMe').patch(restrictTo('admin'), userUpdateMe);
+router
+  .route('/updateMe')
+  .patch(protect, uploadUserPhoto, resizeUserPhoto, userUpdateMe);
+
 //Delete Me User
 router.route('/deleteMe').patch(deleteMe); //only update active:false
 

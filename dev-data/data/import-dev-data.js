@@ -29,7 +29,7 @@ const importData = async () => {
     await User.create(users, { validateBeforeSave: false });
     await Tour.create(tours, { validateBeforeSave: false });
     await Review.create(reviews, { validateBeforeSave: false });
-    console.log('data successfully loaded');
+    // console.log('data successfully loaded');
   } catch (err) {
     console.log('err to upload :', err);
   }
@@ -41,7 +41,7 @@ const deleteData = async () => {
     await Tour.deleteMany();
     await User.deleteMany();
     await Review.deleteMany();
-    console.log('all deleted');
+    // console.log('all deleted');
   } catch (err) {
     console.log('err to delete ', err);
   }
@@ -53,5 +53,5 @@ if (process.argv[2] === '--import') {
 } else if (process.argv[2] === '--delete') {
   deleteData();
 }
-console.log('process.argv', process.argv);
+// console.log('process.argv', process.argv);
 //

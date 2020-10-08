@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -7,9 +8,11 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+
 const tours = require('./routes/tours');
 const users = require('./routes/users');
 const reviews = require('./routes/reviews');
+const bookings = require('./routes/bookings');
 const viewsRouter = require('./routes/viewsRouter');
 const errorControl = require('./controllers/errorController');
 
@@ -23,7 +26,22 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Helmet For security HTTP  Headers
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      'default-src': [
+        "'self'",
+        'ws://127.0.0.1:*',
+        'data:',
+        'api.mapbox.com',
+        'events.mapbox.com',
+      ],
+      'script-src': ["'self'", 'js.stripe.com', 'api.mapbox.com', 'blob:'],
+      'object-src': ["'none'"],
+      'frame-src': ['ws://127.0.0.1:*', 'js.stripe.com/'],
+    },
+  })
+);
 
 //Global Middleware
 if (process.env.NODE_ENV === 'development') {
@@ -38,6 +56,9 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 //Body Parser with limitted body
 app.use(express.json({ limit: '10kb' }));
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
 app.use(cookieParser());
 
 // app.use((req, res, next) => {
@@ -65,6 +86,7 @@ app.use(
   })
 );
 
+app.use(compression());
 //WRITE OUR OWN MIDDLEWARE
 //Serve templates routes
 
@@ -72,6 +94,7 @@ app.use('/', viewsRouter);
 app.use('/api/v1/tours', tours);
 app.use('/api/v1/users', users);
 app.use('/api/v1/reviews', reviews);
+app.use('/api/v1/bookings', bookings);
 
 // Not existing routes
 app.all('*', (req, res, next) => {
