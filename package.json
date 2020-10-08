@@ -4,16 +4,10 @@
   "description": "Main Project Course",
   "main": "server.js",
   "scripts": {
-<<<<<<< HEAD
-    "dev": "nodemon start",
-    "start": "node server.js",
-    "debug": "ndb server.js"
-=======
     "start": "nodemon start",
     "debug": "ndb server.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
->>>>>>> 3098b0df96b9acfeb648eca26f129ea94d97ecc7
   },
   "author": "Oleg",
   "license": "MIT",
