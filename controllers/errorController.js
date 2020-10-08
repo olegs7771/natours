@@ -6,13 +6,13 @@ const handleObjectIdError = (err) => {
 };
 const handleDuplicateFieldsError = (errMsg) => {
   const reg = errMsg.match(/"(.*?)"/g)[0];
-  console.log('reg', reg);
+  // console.log('reg', reg);
   const message = `Duplicate field value:${reg}. Please use another value!`;
   return new AppError(message, 404);
 };
 const handleValidationError = (err) => {
   const errors = Object.values(err.errors).map((elem) => elem.message);
-  console.log('errors', errors);
+  // console.log('errors', errors);
   const message = `Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 404);
 };
@@ -23,7 +23,7 @@ const handleJWTErrorExp = () =>
 
 //DEV ERROR
 const sendErrorDev = (err, req, res) => {
-  console.log('req.originalUrl', req.originalUrl);
+  // console.log('req.originalUrl', req.originalUrl);
   //API ERROR
   if (req.originalUrl.startsWith('/api')) {
     res.status(err.statusCode).json({
@@ -85,7 +85,7 @@ module.exports = (err, req, res, next) => {
     //Validation in Schema fields
     if (error._message === 'Validation failed')
       error = handleValidationError(error);
-    console.log('error', error);
+    // console.log('error', error);
     if (error.name === 'TokenExpiredError') error = handleJWTErrorExp();
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     sendErrorProd(error, req, res);

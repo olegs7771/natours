@@ -34,7 +34,7 @@ const uploadUserPhoto = upload.single('photo');
 const resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
   const dimensions = sizeOf(req.file.buffer);
-  console.log('dimensions', dimensions);
+  // console.log('dimensions', dimensions);
   if (dimensions.orientation === 6) {
     //rotate clockwise 90deg
     req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
@@ -58,8 +58,8 @@ const resizeUserPhoto = catchAsync(async (req, res, next) => {
 });
 
 const filterObj = (obj, ...allowedFields) => {
-  console.log('obj', obj);
-  console.log('allowedFields', allowedFields);
+  // console.log('obj', obj);
+  // console.log('allowedFields', allowedFields);
   const newObj = {};
   Object.keys(obj).map((elem) => {
     if (allowedFields.includes(elem)) newObj[elem] = obj[elem];
@@ -69,15 +69,15 @@ const filterObj = (obj, ...allowedFields) => {
 
 //To get user's own user we create middleware to pass user from req.user.id to req.user.params in order to use factory controller
 const getMe = (req, res, next) => {
-  console.log('req.user1', req.user);
+  // console.log('req.user1', req.user);
   req.params.id = req.user.id;
   next();
 };
 
 //User Updates himsef
 const userUpdateMe = catchAsync(async (req, res, next) => {
-  console.log('req.body in update', req.body);
-  console.log('req.file', req.file);
+  // console.log('req.body in update', req.body);
+  // console.log('req.file', req.file);
   //If User tries to update password ,thraw error
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError('You cant update password here', 401));
@@ -85,7 +85,7 @@ const userUpdateMe = catchAsync(async (req, res, next) => {
   //Filter Update Object. Prevent from updating :role,etc...
   const filteredBody = filterObj(req.body, 'name', 'email');
   if (req.file) filteredBody.photo = req.file.filename;
-  console.log('filteredBody', filteredBody);
+  // console.log('filteredBody', filteredBody);
   const user = await User.findByIdAndUpdate(req.user._id, filteredBody, {
     new: true,
     runValidators: true,

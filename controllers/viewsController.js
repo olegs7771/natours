@@ -7,7 +7,6 @@ const catchAsync = require('../utils/catchAsync');
 const getOverview = catchAsync(async (req, res, next) => {
   // 1) Get tour data from collection
   const tours = await Tour.find();
-  console.log('tours', tours);
 
   // 2) Build template
 
@@ -17,9 +16,9 @@ const getOverview = catchAsync(async (req, res, next) => {
     tours,
   });
 });
-console.log('in views env', process.env.PASSWORD);
+// console.log('in views env', process.env.PASSWORD);
 const getTour = catchAsync(async (req, res, next) => {
-  console.log('in views env', process.env.PASSWORD);
+  // console.log('in views env', process.env.PASSWORD);
   // 1)get the data for the requested tour(including reviews and guides)
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
@@ -51,7 +50,7 @@ const getMyTours = catchAsync(async (req, res, next) => {
   // 1) Find all bookings of logged User
 
   const bookings = await Booking.find({ user: req.user.id });
-  console.log('bookings', bookings);
+  // console.log('bookings', bookings);
   // 2) Find tours with the returned IDs
   const tourId = bookings.map((el) => el.tour);
   const tours = await Tour.find({ _id: { $in: tourId } }); //find all tours with id $in array
@@ -62,7 +61,7 @@ const getMyTours = catchAsync(async (req, res, next) => {
 });
 
 const updateUserData = catchAsync(async (req, res, next) => {
-  console.log('req.body', req.body);
+  // console.log('req.body', req.body);
   const user = await User.findByIdAndUpdate(
     req.user.id,
     {

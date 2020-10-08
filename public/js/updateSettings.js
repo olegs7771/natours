@@ -5,8 +5,8 @@ const updateSettings = async (data, type) => {
   try {
     const url =
       type === 'password'
-        ? 'http://127.0.0.1:8000/api/v1/users/updatePassword'
-        : 'http://127.0.0.1:8000/api/v1/users/updateMe';
+        ? '/api/v1/users/updatePassword'
+        : '/api/v1/users/updateMe';
     const res = await axios.patch(url, data);
     console.log('res.data', res.data);
     if (res.data.status === 'success') {
@@ -43,15 +43,15 @@ if (formUpdatePassword) {
     const newpassword = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
     const data = { password, newpassword, passwordConfirm };
-    console.log('data password', data);
+    // console.log('data password', data);
 
-    console.log('updating..');
+    // console.log('updating..');
     document.querySelector('.btn--save-password').textContent = 'Updating..';
     await updateSettings(data, 'password');
     document.querySelector('.btn--save-password').textContent = 'Save Password';
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
-    console.log('updated');
+    // console.log('updated');
   });
 }
