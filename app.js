@@ -26,7 +26,22 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Helmet For security HTTP  Headers
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      'default-src': [
+        "'self'",
+        'ws://127.0.0.1:*',
+        'data:',
+        'api.mapbox.com',
+        'events.mapbox.com',
+      ],
+      'script-src': ["'self'", 'js.stripe.com', 'api.mapbox.com', 'blob:'],
+      'object-src': ["'none'"],
+      'frame-src': ['ws://127.0.0.1:*', 'js.stripe.com/'],
+    },
+  })
+);
 
 //Global Middleware
 if (process.env.NODE_ENV === 'development') {
