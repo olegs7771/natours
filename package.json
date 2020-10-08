@@ -4,7 +4,8 @@
   "description": "Main Project Course",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon start",
+    "dev": "nodemon start",
+    "start": "node server.js",
     "debug": "ndb server.js"
   },
   "author": "Oleg",
@@ -42,5 +43,8 @@
     "slugify": "^1.4.5",
     "validator": "^13.1.1",
     "xss-clean": "^0.1.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }
