@@ -2,5 +2,4 @@
 config.env
 .gitignore
 .cache
-bundle.js
-bundle.js.map
+
