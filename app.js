@@ -16,6 +16,7 @@ const reviews = require('./routes/reviews');
 const bookings = require('./routes/bookings');
 const viewsRouter = require('./routes/viewsRouter');
 const errorControl = require('./controllers/errorController');
+const { webhookCheckout } = require( './controllers/bookingController' );
 
 const app = express();
 app.enable('trust proxy'); //Heroku works through proxies
@@ -59,6 +60,10 @@ const limiter = rateLimit({
   message: 'Too many requests.Try again in 15 min',
 });
 app.use('/api', limiter);
+
+//Stripe Hook End Point
+
+app.post('/webhook-checkout',webhookCheckout)
 //Body Parser with limitted body
 app.use(express.json({ limit: '10kb' }));
 // parse application/x-www-form-urlencoded
