@@ -1,4 +1,3 @@
-console.log('hello from parcel');
 /*eslint-disable*/
 import '@babel/polyfill';
 import { login, logout } from './login';

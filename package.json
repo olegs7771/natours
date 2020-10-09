@@ -4,8 +4,9 @@
   "description": "Main Project Course",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon start",
-    "debug": "ndb server.js",
+    "dev": "nodemon start",
+    "start": "node server.js",
+    "debug": "node server.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
