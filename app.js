@@ -17,6 +17,9 @@ const viewsRouter = require('./routes/viewsRouter');
 const errorControl = require('./controllers/errorController');
 
 const app = express();
+app.enable('trust proxy'); //Heroku works through proxies
+//in order in authController.js createSendToken function
+// be able to use  secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
