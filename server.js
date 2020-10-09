@@ -30,8 +30,16 @@ const server = app.listen(port, () => {
 process.on('unhandledRejection', (err) => {
   // console.log(err.name);
   // console.log(err.message);
-  console.log('UNHANDLED REJECTION 💥 Shutting Down..');
+  console.log('UNHANDLED REJECTION 💥 Shutting Down..', err);
   server.close(() => {
     process.exit(1);
+  });
+});
+
+//Gisterm form Heroku Dyno
+process.on('SIGTERM', () => {
+  console.log('👍SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    console.log('💥Proccess terminated');
   });
 });
