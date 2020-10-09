@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const compression = require('compression');
+const cors = require('cors');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -27,7 +28,8 @@ app.set('views', path.join(__dirname, 'views'));
 //Serving static files
 // app.use(express.static(`${__dirname}/public`));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cors());
+app.options('*', cors()); //for pre-flight requests
 //Helmet For security HTTP  Headers
 app.use(
   helmet.contentSecurityPolicy({
