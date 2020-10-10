@@ -62,23 +62,21 @@ const createBookingCheckout = async (session) => {
 };
 
 const webhookCheckout = (req, res, next) => {
-  console.log('req.headers', req.headers['stripe-signature']);
-  res.json(req.headers['stripe-signature']);
-  // const signature = req.headers['stripe-signature'];
-  // let event;
-  // try {
-  //   event = stripe.webhooks.constructEvent(
-  //     req.body,
-  //     signature,
-  //     process.env.STRIPE_WEBHOOK_SECRET
-  //   );
-  // } catch (err) {
-  //   return res.status(400).send(`Webhook error: ${err.message}`);
-  // }
-  // if (event.type === 'checkout.session.completed') {
-  //   createBookingCheckout(event.data.object);
-  //   res.status(200).json({ received: true });
-  // }
+  const signature = req.headers['stripe-signature'];
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    return res.status(400).send(`Webhook error: ${err.message}`);
+  }
+  if (event.type === 'checkout.session.completed') {
+    createBookingCheckout(event.data.object);
+    res.status(200).json({ received: true });
+  }
 };
 
 const createBooking = factory.createOne(Booking);
