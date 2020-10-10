@@ -33,8 +33,7 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
           `https://images.theconversation.com/files/305661/original/file-20191206-90618-6l114c.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=754&h=503&fit=crop&dpr=1`,
           `https://i.imgur.com/EHyR2nP.png`,
         ],
-        price: tour.price * 100,
-
+        amount: tour.price * 100,
         currency: 'usd',
         quantity: 1,
       },
