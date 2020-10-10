@@ -43,4 +43,3 @@ process.on('SIGTERM', () => {
     console.log('💥Proccess terminated');
   });
 });
-///
