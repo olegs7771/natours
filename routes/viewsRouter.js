@@ -8,7 +8,7 @@ const {
   getMyTours,
 } = require('../controllers/viewsController');
 const { isLoggedIn, protect } = require('../controllers/authController');
-// const { createBookingCheckout } = require('../controllers/bookingController');
+const { webhookCheckout } = require('../controllers/bookingController');
 
 const router = express.Router();
 
@@ -27,4 +27,7 @@ router.get('/me', protect, getAccount);
 router.get('/my-tours', protect, getMyTours);
 
 router.post('/submit-user-data', protect, updateUserData);
+//WEBHOOK Stripe End Point
+router.post('/webhook-checkout', webhookCheckout);
+
 module.exports = router;
