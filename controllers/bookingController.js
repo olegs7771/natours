@@ -15,6 +15,12 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
 
   // 2) Create checkout session
+  const images =
+    process.env.NODE_ENV === 'production'
+      ? [`https://someappoleg.herokuapp.com/img/tours/${tour.imageCover}`]
+      : [
+          `https://images.theconversation.com/files/305661/original/file-20191206-90618-6l114c.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=754&h=503&fit=crop&dpr=1`,
+        ];
 
   const session = await stripe.checkout.sessions.create({
     success_url: `${req.protocol}://${req.get('host')}/my-tours`,
@@ -26,10 +32,7 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
       {
         name: `${tour.name} Tour`,
         description: tour.summary,
-        images: [
-          `https://images.theconversation.com/files/305661/original/file-20191206-90618-6l114c.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=754&h=503&fit=crop&dpr=1`,
-          `https://i.imgur.com/EHyR2nP.png`,
-        ],
+        images,
         amount: tour.price * 100,
         currency: 'usd',
         quantity: 1,
@@ -43,15 +46,6 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
     session,
   });
 });
-
-// const createBookingCheckout = catchAsync(async (req, res, next) => {
-//   // Temporary and Unsecure. Everyone can make bookings without paying
-//   const { tour, user, price } = req.query;
-//   if (!tour && !user && !price) return next();
-//   await Booking.create({ tour, user, price });
-//   res.redirect(req.originalUrl.split('?')[0]);
-//   //insert this handle into the stack in viewRouter '/'
-// });
 
 const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
