@@ -15,6 +15,7 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
 
   // 2) Create checkout session
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     //success payment => create new Booking
@@ -32,7 +33,8 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
           `https://images.theconversation.com/files/305661/original/file-20191206-90618-6l114c.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=754&h=503&fit=crop&dpr=1`,
           `https://i.imgur.com/EHyR2nP.png`,
         ],
-        amount: tour.price * 100,
+        price: tour.price * 100,
+
         currency: 'usd',
         quantity: 1,
       },
