@@ -21,12 +21,7 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
       : [
           `https://images.theconversation.com/files/305661/original/file-20191206-90618-6l114c.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=754&h=503&fit=crop&dpr=1`,
         ];
-  await stripe.charges.create({
-    amount: 2000,
-    currency: 'cad',
-    source: 'tok_amex', // obtained with Stripe.js
-    metadata: { order_id: '6735' },
-  });
+
   const session = await stripe.checkout.sessions.create({
     success_url: `${req.protocol}://${req.get('host')}/my-tours`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
@@ -53,10 +48,10 @@ const getCheckOutSession = catchAsync(async (req, res, next) => {
 });
 
 const createBookingCheckout = async (session) => {
-  // const tour = session.client_reference_id;
-  // const user = (await User.findOne({ email: session.customer_email })).id;
-  // const price = session.line_items[0].amount / 100;
-  // await Booking.create({ tour, user, price });
+  const tour = session.client_reference_id;
+  const user = (await User.findOne({ email: session.customer_email })).id;
+  const price = session.amount_total / 100;
+  await Booking.create({ tour, user, price });
 };
 
 const webhookCheckout = (req, res, next) => {
@@ -72,7 +67,7 @@ const webhookCheckout = (req, res, next) => {
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
   if (event.type === 'checkout.session.completed') {
-    // createBookingCheckout( event.data.object);
+    createBookingCheckout(event.data.object);
     res.status(200).json({ received: true, session: event.data.object });
   }
 };
