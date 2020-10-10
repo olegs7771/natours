@@ -63,7 +63,11 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 //Stripe Hook End Point
-app.post('/webhook-checkout', bodyParser.raw({ type: '*/*' }), webhookCheckout);
+app.post(
+  '/webhook-checkout',
+  bodyParser.raw({ type: 'application/json' }),
+  webhookCheckout
+);
 //Body Parser with limitted body
 app.use(express.json({ limit: '10kb' }));
 // parse application/x-www-form-urlencoded
