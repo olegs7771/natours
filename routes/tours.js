@@ -12,6 +12,8 @@ const {
   getMonthlyPlan,
   getToursWithin,
   getDistances,
+  uploadTourImages,
+  resizeToursPhoto,
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('../controllers/authController');
 //Merge Rauters
@@ -49,6 +51,12 @@ router
   .route('/:id')
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour)
   .get(getTour)
-  .patch(protect, restrictTo('admin', 'lead-guide'), updateTour);
+  .patch(
+    protect,
+    restrictTo('admin', 'lead-guide'),
+    uploadTourImages,
+    resizeToursPhoto,
+    updateTour
+  );
 
 module.exports = router;
