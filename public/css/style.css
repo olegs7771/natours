@@ -42,6 +42,11 @@ body {
   -ms-flex-direction: column;
   flex-direction: column;
 }
+@media only screen and (max-width: 37.5em) {
+  body {
+    padding: 0rem;
+  }
+}
 
 .main {
   background-color: #f7f7f7;
@@ -50,6 +55,11 @@ body {
   -ms-flex: 1;
   flex: 1;
   position: relative;
+}
+@media only screen and (max-width: 37.5em) {
+  .main {
+    padding: 0rem;
+  }
 }
 
 .flex {
@@ -320,6 +330,8 @@ body {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
+    height: auto;
+    padding-bottom: 2rem;
   }
 }
 .header__logo img {
@@ -805,6 +817,11 @@ body {
   -ms-flex-pack: justify;
   justify-content: space-between;
 }
+@media only screen and (max-width: 37.5em) {
+  .footer {
+    padding: 1rem;
+  }
+}
 @media only screen and (max-width: 50em) {
   .footer {
     grid-template-columns: 1fr;
@@ -1073,7 +1090,8 @@ body {
   max-width: 120rem;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* grid-template-columns: repeat(3, 1fr); */
+  grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
   grid-gap: 7rem;
 }
 

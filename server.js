@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 //Handle Uncaught Exeptions (errors,bugs in asynchrones code)
 process.on('uncaughtException', (err) => {
-  // console.log(err.name, ':', err.message);
-  // console.log('UNCAUGHT EXEPTION 💥 Shutting Down..');
+  console.log(err.name, ':', err.message);
+  console.log('UNCAUGHT EXEPTION 💥 Shutting Down..');
   process.exit(1);
 });
 const app = require('./app');
