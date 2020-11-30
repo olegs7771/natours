@@ -2,4 +2,5 @@
 config.env
 .gitignore
 .cache
+config.env
 
